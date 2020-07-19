@@ -7,13 +7,16 @@
 
     <Button
         android:id="@+id/scanButton"
-        android:layout_width="fill_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/bottom_background_color"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle_background"
         android:orientation="horizontal"
         android:padding="@dimen/bottom_bar_padding"
-        android:text="@string/scan"/>
+        android:text="@string/scan"
+        android:textColor="@color/colorWhite" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -42,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -20,7 +19,7 @@
         android:id="@+id/tv_app"
         style="@style/ScreenTitle"
         android:layout_marginStart="10dp"
-        android:text="CamMaster"
+        android:text="@string/cammaster"
         app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
         app:layout_constraintStart_toEndOf="@+id/iv_logo"
         app:layout_constraintTop_toTopOf="@+id/iv_logo" />
@@ -29,39 +28,44 @@
         android:id="@+id/tv_docs"
         style="@style/ScreenTitle"
         android:layout_marginTop="20dp"
-        android:text="MyDocs"
+        android:text="@string/mydocs"
+        android:textSize="20sp"
         android:textStyle="normal"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_cam"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_no_data"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:text="camera"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_gal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="400dp"
-        android:text="galary"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_result"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="100dp"
-        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_empty"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/ubuntu_light"
+            android:text="@string/no_scanned_docs_yet"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_no_data" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_docs"
@@ -72,11 +76,45 @@
         app:layout_constraintStart_toStartOf="@+id/gl_start"
         app:layout_constraintTop_toBottomOf="@+id/tv_docs" />
 
+    <Button
+        android:id="@+id/btnCamera"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle_background"
+        android:drawableStart="@drawable/ic_camera"
+        android:fontFamily="@font/ubuntu"
+        android:gravity="center"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:text="@string/camera"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnGalary"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnGalary"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle_background"
+        android:drawableStart="@drawable/ic_original"
+        android:fontFamily="@font/ubuntu"
+        android:padding="10dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:text="@string/files"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnCamera" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_menu"
         android:layout_width="220dp"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorBlack"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -85,7 +123,7 @@
             android:id="@+id/tv_menuOCR"
             style="@style/MenuText"
             android:layout_marginTop="80dp"
-            android:text="OCR (Text Detection)"
+            android:text="@string/ocr_text_detection"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,7 +131,7 @@
             android:id="@+id/tv_menuBarcode"
             style="@style/MenuText"
             android:layout_marginTop="20dp"
-            android:text="Barcode Scanning"
+            android:text="@string/barcode_scanning"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_menuOCR" />
 
@@ -101,13 +139,13 @@
             android:id="@+id/tv_menuAbout"
             style="@style/MenuText"
             android:layout_marginTop="20dp"
-            android:text="About"
+            android:text="@string/about"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_menuBarcode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,35 +153,6 @@
         android:src="@drawable/ic_menu"
         app:layout_constraintEnd_toEndOf="@id/gl_end"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Camera"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/circle_background"
-        android:padding="10dp"
-        app:layout_constraintEnd_toStartOf="@id/btnGalary"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:drawableStart="@drawable/ic_camera" />
-
-    <Button
-        android:id="@+id/btnGalary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Files"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintStart_toEndOf="@id/btnCamera"
-        android:background="@drawable/circle_background"
-        android:padding="10dp"
-        android:drawableStart="@drawable/ic_original"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_start"
