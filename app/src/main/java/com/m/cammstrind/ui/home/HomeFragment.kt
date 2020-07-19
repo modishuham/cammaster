@@ -21,6 +21,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 
 class HomeFragment : Fragment() {
 
@@ -101,19 +102,23 @@ class HomeFragment : Fragment() {
 
 
     private fun showImageInGalary(filePath: String) {
-        ContentValues().apply {
-            put(MediaStore.Images.Media.TITLE, "image")
-            put(MediaStore.Images.Media.DISPLAY_NAME, "image")
-            put(MediaStore.Images.Media.MIME_TYPE, "image/*")
-            put("_data", filePath)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, filePath)
-                put(MediaStore.MediaColumns.IS_PENDING, 1)
+        try {
+            ContentValues().apply {
+                put(MediaStore.Images.Media.TITLE, "image")
+                put(MediaStore.Images.Media.DISPLAY_NAME, "image")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/*")
+                put("_data", filePath)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, filePath)
+                    put(MediaStore.MediaColumns.IS_PENDING, 1)
+                }
+                requireContext().contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    this
+                )
             }
-            requireContext().contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                this
-            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
     }
 

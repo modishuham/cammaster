@@ -127,18 +127,24 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     public Bitmap getRightRotateBitmap(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(270);
+        matrix.postRotate(-90);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public Bitmap getMirrorBitmap(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.setScale(-1,1);
+        matrix.setScale(-1, 1);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     static {
         System.loadLibrary("opencv_java3");
         System.loadLibrary("Scanner");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

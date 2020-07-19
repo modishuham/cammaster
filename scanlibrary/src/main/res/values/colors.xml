@@ -9,4 +9,6 @@
     <color name="polygonViewCircleBackground">#90e5f8ff</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorPurple">#7C4DFF</color>
+    <color name="colorAppBack">#121212</color>
 </resources>
