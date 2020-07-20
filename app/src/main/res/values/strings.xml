@@ -8,4 +8,7 @@
     <string name="about">About</string>
     <string name="camera">Camera</string>
     <string name="files">Files</string>
+    <string name="name_your_doc">Name your DOC</string>
+    <string name="save_as_image">Save as image</string>
+    <string name="save_as_pdf">Save as PDF</string>
 </resources>

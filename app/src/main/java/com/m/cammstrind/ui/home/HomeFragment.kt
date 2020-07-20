@@ -13,15 +13,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.itextpdf.text.Document
+import com.itextpdf.text.Image
+import com.itextpdf.text.Rectangle
+import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.R
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
 import kotlinx.android.synthetic.main.fragment_home.*
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.lang.Exception
+import java.io.*
 
 class HomeFragment : Fragment() {
 
@@ -58,24 +58,47 @@ class HomeFragment : Fragment() {
     }
 
     private fun saveReceivedImage(
-        bitmap: Bitmap?
+        bitmap: Bitmap?,
+        imageName: String,
+        imageType: String
     ) {
         try {
-            val outStream: FileOutputStream
-            val mediaStorageDir: String =
-                "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
-            val mFolder = File(mediaStorageDir)
-            if (!mFolder.exists()) {
-                mFolder.mkdir()
-            }
-            val fileName = "123.png"
-            val outFile = File(mFolder, fileName)
-            outStream = FileOutputStream(outFile)
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-            outStream.flush()
-            outStream.close()
-            showImageInGalary(outFile.toString())
+            if (imageType == "IMG") {
+                val outStream: FileOutputStream
+                val mediaStorageDir: String =
+                    "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
+                val mFolder = File(mediaStorageDir)
+                if (!mFolder.exists()) {
+                    mFolder.mkdir()
+                }
+                val outFile = File(mFolder, imageName + ".jpg")
+                outStream = FileOutputStream(outFile)
+                bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+                outStream.flush()
+                outStream.close()
+                showImageInGalary(outFile.toString())
+            } else {
+                val mediaStorageDir: String =
+                    "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
+                val mFolder = File(mediaStorageDir)
+                if (!mFolder.exists()) {
+                    mFolder.mkdir()
+                }
+                val stream = ByteArrayOutputStream()
+                bitmap!!.compress(Bitmap.CompressFormat.PNG,100, stream)
+                val image = Image.getInstance(stream.toByteArray())
 
+                val pageSize = Rectangle(image.width, image.height)
+                val document = Document(pageSize)
+                PdfWriter.getInstance(document,FileOutputStream(File(mediaStorageDir,
+                    "$imageName.pdf"
+                )))
+
+                image.alignment = Image.ALIGN_CENTER
+                document.open()
+                document.add(image)
+                document.close()
+            }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -126,6 +149,8 @@ class HomeFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
             val uri: Uri? = data?.extras!!.getParcelable(ScanConstants.SCANNED_RESULT)
+            val imageType: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_TYPE) as String
+            val imageName: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_NAME) as String
             var bitmap: Bitmap? = null
             try {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -134,7 +159,7 @@ class HomeFragment : Fragment() {
                 } else {
                     MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                 }
-                saveReceivedImage(bitmap)
+                saveReceivedImage(bitmap, imageName, imageType)
                 if (uri != null) {
                     requireContext().contentResolver.delete(uri, null, null)
                 }

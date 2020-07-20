@@ -1,6 +1,7 @@
 package com.scanlibrary;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -15,7 +16,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -161,36 +164,62 @@ public class ResultFragment extends Fragment {
     private class DoneButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            showProgressDialog(getResources().getString(R.string.loading));
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Intent data = new Intent();
-                        Bitmap bitmap = transformed;
-                        if (transformedBR != null) {
-                            bitmap = transformedBR;
-                        }
-                        if (bitmap == null) {
-                            bitmap = original;
-                        }
-                        Uri uri = Utils.getUri(getActivity(), bitmap);
-                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
-                        getActivity().setResult(Activity.RESULT_OK, data);
-                        original.recycle();
-                        System.gc();
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dismissDialog();
-                                getActivity().finish();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            try {
+                Bitmap bitmap = transformed;
+                if (transformedBR != null) {
+                    bitmap = transformedBR;
                 }
-            });
+                if (bitmap == null) {
+                    bitmap = original;
+                }
+                final Bitmap finalBitmap = bitmap;
+                Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.dialog_save);
+                Button saveBtnImg = dialog.findViewById(R.id.btn_save_img);
+                Button saveBtnPdf = dialog.findViewById(R.id.btn_save_pdf);
+                final EditText docName = dialog.findViewById(R.id.et_file_name);
+                saveBtnImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (docName.getText().toString().isEmpty()) {
+                            docName.setError("Can't Empty");
+                        } else {
+                            Intent data = new Intent();
+                            Uri uri = Utils.getUri(getActivity(), finalBitmap);
+                            data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                            data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "IMG");
+                            data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
+                            getActivity().setResult(Activity.RESULT_OK, data);
+                            original.recycle();
+                            System.gc();
+                            getActivity().finish();
+                        }
+                    }
+                });
+                saveBtnPdf.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (docName.getText().toString().isEmpty()) {
+                            docName.setError("Can't Empty");
+                        } else {
+                            Intent data = new Intent();
+                            Uri uri = Utils.getUri(getActivity(), finalBitmap);
+                            data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                            data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "PDF");
+                            data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
+                            getActivity().setResult(Activity.RESULT_OK, data);
+                            original.recycle();
+                            System.gc();
+                            getActivity().finish();
+                        }
+                    }
+                });
+                dialog.show();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
