@@ -4,14 +4,19 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
@@ -22,24 +27,36 @@ import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.io.*
+import java.util.*
 
 class HomeFragment : Fragment() {
 
     private val requestCode = 99
-    private var imagesList = arrayListOf<String>()
+    private lateinit var adapter: DocsAdapter
+    private var docsList = arrayListOf<DOC>()
+    private var mView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_home, container, false)
+        }
+        return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnCamera.setOnClickListener { openCamera() }
         btnGalary.setOnClickListener { openGalary() }
+        if (docsList.isEmpty()) {
+            progressBar.visibility = View.VISIBLE
+            adapter = DocsAdapter()
+            rv_docs.adapter = adapter
+            getSavedImages()
+        }
     }
 
     private fun openCamera() {
@@ -71,7 +88,7 @@ class HomeFragment : Fragment() {
                 if (!mFolder.exists()) {
                     mFolder.mkdir()
                 }
-                val outFile = File(mFolder, imageName + ".jpg")
+                val outFile = File(mFolder, "$imageName.png")
                 outStream = FileOutputStream(outFile)
                 bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                 outStream.flush()
@@ -85,14 +102,19 @@ class HomeFragment : Fragment() {
                     mFolder.mkdir()
                 }
                 val stream = ByteArrayOutputStream()
-                bitmap!!.compress(Bitmap.CompressFormat.PNG,100, stream)
+                bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
                 val image = Image.getInstance(stream.toByteArray())
 
                 val pageSize = Rectangle(image.width, image.height)
                 val document = Document(pageSize)
-                PdfWriter.getInstance(document,FileOutputStream(File(mediaStorageDir,
-                    "$imageName.pdf"
-                )))
+                PdfWriter.getInstance(
+                    document, FileOutputStream(
+                        File(
+                            mediaStorageDir,
+                            "$imageName.pdf"
+                        )
+                    )
+                )
 
                 image.alignment = Image.ALIGN_CENTER
                 document.open()
@@ -107,20 +129,51 @@ class HomeFragment : Fragment() {
     }
 
     private fun getSavedImages() {
-        val mediaStorageDir: String =
-            "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
-        val mFolder = File(mediaStorageDir)
-        if (mFolder.exists()) {
-            val allFiles: Array<File>? = mFolder.listFiles { _, name ->
-                name.endsWith(".jpg") ||
-                        name.endsWith(".jpeg") ||
-                        name.endsWith(".png")
+        Thread(Runnable {
+            val mediaStorageDir: String =
+                "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
+            val mFolder = File(mediaStorageDir)
+            if (mFolder.exists()) {
+                val allFiles: Array<File>? = mFolder.listFiles { _, name ->
+                    name.endsWith(".jpg") ||
+                            name.endsWith(".jpeg") ||
+                            name.endsWith(".png") ||
+                            name.endsWith(".pdf")
+                }
+                if (allFiles == null || allFiles.isEmpty()) {
+                    progressBar.visibility = View.GONE
+                    cl_no_data.visibility = View.VISIBLE
+                    return@Runnable
+                }
+
+                for (file in allFiles.asList()) {
+                    try {
+                        val path = file.path
+                        if (path.endsWith(".pdf")) {
+                            val doc = DOC(file.name, file.extension, null, path)
+                            docsList.add(doc)
+                        } else {
+                            val doc = DOC(file.name, file.extension, getThumbnail(path), path)
+                            docsList.add(doc)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                requireActivity().runOnUiThread {
+                    adapter.setDocsList(docsList)
+                    mView!!.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
+                }
             }
-            for (file in allFiles!!.iterator()) {
-                imagesList.add(file.path)
-                //val bitmap = BitmapFactory.decodeFile(file.path)
-            }
-        }
+        }).start()
+    }
+
+    private fun getThumbnail(path: String): Bitmap {
+        return ThumbnailUtils.extractThumbnail(
+            BitmapFactory.decodeFile(path),
+            80,
+            80
+        );
     }
 
 

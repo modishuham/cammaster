@@ -19,20 +19,41 @@
         <action
             android:id="@+id/action_homeFragment_to_barcodeFragment"
             app:destination="@id/barcodeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_docDetailFragment"
+            app:destination="@id/docDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.m.cammstrind.ui.about.AboutFragment"
         android:label="AboutFragment"
-        tools:layout="@layout/fragment_about"/>
+        tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/barcodeFragment"
         android:name="com.m.cammstrind.ui.barcode.BarcodeFragment"
         android:label="BarcodeFragment"
-        tools:layout="@layout/fragment_barcode"/>
+        tools:layout="@layout/fragment_barcode" />
     <fragment
         android:id="@+id/ocrFragment"
         android:name="com.m.cammstrind.ui.ocr.OcrFragment"
         android:label="OcrFragment"
-        tools:layout="@layout/fragment_ocr"/>
+        tools:layout="@layout/fragment_ocr" />
+    <fragment
+        android:id="@+id/docDetailFragment"
+        android:name="com.m.cammstrind.ui.docDetail.DocDetailFragment"
+        android:label="DocDetailFragment"
+        tools:layout="@layout/fragment_doc_detail">
+        <argument
+            android:name="docName"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="docPath"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="docImage"
+            app:argType="android.graphics.Bitmap"
+            app:nullable="true" />
+    </fragment>
 </navigation>
