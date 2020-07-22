@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
+import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_detail.*
 import java.io.File
 
@@ -41,7 +43,15 @@ class DocDetailFragment : Fragment() {
         }
 
         btn_delete.setOnClickListener {
-            deleteDoc()
+            DialogUtils.openAlertDialog(requireContext(),
+                "Are you sure want to delete this?",
+                false,
+                View.OnClickListener {
+                    deleteDoc()
+                    DialogUtils.dismissDialog()
+                    findNavController().popBackStack()
+                }
+            )
         }
 
         val mediaStorageDir: String =
