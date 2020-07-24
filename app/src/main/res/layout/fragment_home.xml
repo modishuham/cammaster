@@ -25,64 +25,140 @@
         app:layout_constraintStart_toEndOf="@+id/iv_logo"
         app:layout_constraintTop_toTopOf="@+id/iv_logo" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_docs"
-        style="@style/ScreenTitle"
-        android:layout_marginTop="20dp"
-        android:text="@string/mydocs"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        app:layout_constraintStart_toStartOf="@+id/gl_start"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_no_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:id="@+id/btn_browse_images"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toStartOf="@id/btn_browse_pdf"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toBottomOf="@+id/iv_logo">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_no_data"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_empty"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/iv_browse_images"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_folder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_no_data"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_browse_images"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/ubuntu_light"
-            android:text="@string/no_scanned_docs_yet"
+            android:gravity="center"
+            android:text="@string/scanned_images"
             android:textColor="@color/colorWhite"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_no_data" />
+            app:layout_constraintEnd_toEndOf="@+id/iv_browse_images"
+            app:layout_constraintStart_toStartOf="@+id/iv_browse_images"
+            app:layout_constraintTop_toBottomOf="@+id/iv_browse_images" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_docs"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_browse_pdf"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_browse_images"
         app:layout_constraintEnd_toStartOf="@+id/gl_end"
+        app:layout_constraintStart_toEndOf="@+id/btn_browse_images"
+        app:layout_constraintTop_toTopOf="@+id/btn_browse_images">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_browse_pdf"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_folder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_browse_pdf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_light"
+            android:gravity="center"
+            android:text="@string/scanned_pdf"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="@+id/iv_browse_pdf"
+            app:layout_constraintStart_toStartOf="@+id/iv_browse_pdf"
+            app:layout_constraintTop_toBottomOf="@+id/iv_browse_pdf" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_ocr"
+        android:layout_width="0dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="@id/gl_end"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
-        app:layout_constraintTop_toBottomOf="@+id/tv_docs"
-        app:spanCount="3"
-        tools:listitem="@layout/item_doc" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_browse_images">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_ocr"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_ocr"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ocr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_ocr"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_light"
+            android:text="@string/text_recognition"
+            android:textColor="@color/colorWhite"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_barcode"
+        android:layout_width="0dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="@id/gl_end"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toBottomOf="@+id/btn_ocr">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_barcode"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_barcode"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_barcode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_barcode"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_light"
+            android:text="@string/barcode_scanner"
+            android:textColor="@color/colorWhite"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/btnCamera"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -100,6 +176,7 @@
 
     <Button
         android:id="@+id/btnGalary"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -120,6 +197,9 @@
         android:layout_width="220dp"
         android:layout_height="match_parent"
         android:background="@color/colorBlack"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -149,16 +229,6 @@
             app:layout_constraintTop_toBottomOf="@id/tv_menuBarcode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_menu"

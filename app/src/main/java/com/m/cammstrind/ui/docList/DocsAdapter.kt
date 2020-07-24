@@ -1,8 +1,5 @@
-package com.m.cammstrind.ui.home
+package com.m.cammstrind.ui.docList
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.ThumbnailUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.m.cammstrind.R
+import com.m.cammstrind.response.DOC
 
 class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
 
@@ -58,17 +56,9 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                     "docPath" to doc.docPath
                 )
                 it.findNavController()
-                    .navigate(R.id.action_homeFragment_to_docDetailFragment, bundle)
+                    .navigate(R.id.action_docListFragment_to_docDetailFragment, bundle)
             }
         }
 
-    }
-
-    private fun getThumbnail(path: String): Bitmap {
-        return ThumbnailUtils.extractThumbnail(
-            BitmapFactory.decodeFile(path),
-            80,
-            80
-        );
     }
 }

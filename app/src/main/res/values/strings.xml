@@ -2,7 +2,7 @@
     <string name="app_name">Cam Master</string>
     <string name="cammaster">CamMaster</string>
     <string name="mydocs">MyDocs</string>
-    <string name="no_scanned_docs_yet">No Scanned Docs Yet..</string>
+    <string name="no_data_found">No Data Found</string>
     <string name="ocr_text_detection">OCR (Text Detection)</string>
     <string name="barcode_scanning">Barcode Scanning</string>
     <string name="about">About</string>
@@ -13,4 +13,8 @@
     <string name="save_as_pdf">Save as PDF</string>
     <string name="share">Share</string>
     <string name="delete">Delete</string>
+    <string name="scanned_images">Scanned Images</string>
+    <string name="scanned_pdf">Scanned PDF</string>
+    <string name="text_recognition">Text Recognition</string>
+    <string name="barcode_scanner">Barcode Scanner</string>
 </resources>

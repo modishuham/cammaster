@@ -11,13 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import androidx.core.view.isVisible
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
@@ -27,13 +26,10 @@ import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.io.*
-import java.util.*
 
 class HomeFragment : Fragment() {
 
     private val requestCode = 99
-    private lateinit var adapter: DocsAdapter
-    private var docsList = arrayListOf<DOC>()
     private var mView: View? = null
 
     override fun onCreateView(
@@ -51,11 +47,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btnCamera.setOnClickListener { openCamera() }
         btnGalary.setOnClickListener { openGalary() }
-        if (docsList.isEmpty()) {
-            progressBar.visibility = View.VISIBLE
-            adapter = DocsAdapter()
-            rv_docs.adapter = adapter
-            getSavedImages()
+        btn_browse_images.setOnClickListener {
+            val bundle = bundleOf("docType" to resources.getString(R.string.scanned_images))
+            findNavController().navigate(R.id.action_homeFragment_to_docListFragment, bundle)
+        }
+        btn_browse_pdf.setOnClickListener {
+            val bundle = bundleOf("docType" to resources.getString(R.string.scanned_pdf))
+            findNavController().navigate(R.id.action_homeFragment_to_pdfListFragment, bundle)
         }
     }
 
@@ -127,55 +125,6 @@ class HomeFragment : Fragment() {
             e.printStackTrace()
         }
     }
-
-    private fun getSavedImages() {
-        Thread(Runnable {
-            val mediaStorageDir: String =
-                "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
-            val mFolder = File(mediaStorageDir)
-            if (mFolder.exists()) {
-                val allFiles: Array<File>? = mFolder.listFiles { _, name ->
-                    name.endsWith(".jpg") ||
-                            name.endsWith(".jpeg") ||
-                            name.endsWith(".png") ||
-                            name.endsWith(".pdf")
-                }
-                if (allFiles == null || allFiles.isEmpty()) {
-                    progressBar.visibility = View.GONE
-                    cl_no_data.visibility = View.VISIBLE
-                    return@Runnable
-                }
-
-                for (file in allFiles.asList()) {
-                    try {
-                        val path = file.path
-                        if (path.endsWith(".pdf")) {
-                            val doc = DOC(file.name, file.extension, null, path)
-                            docsList.add(doc)
-                        } else {
-                            val doc = DOC(file.name, file.extension, getThumbnail(path), path)
-                            docsList.add(doc)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-                requireActivity().runOnUiThread {
-                    adapter.setDocsList(docsList)
-                    mView!!.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
-                }
-            }
-        }).start()
-    }
-
-    private fun getThumbnail(path: String): Bitmap {
-        return ThumbnailUtils.extractThumbnail(
-            BitmapFactory.decodeFile(path),
-            80,
-            80
-        );
-    }
-
 
     private fun showImageInGalary(filePath: String) {
         try {

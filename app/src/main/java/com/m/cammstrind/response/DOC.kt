@@ -1,4 +1,4 @@
-package com.m.cammstrind.ui.home
+package com.m.cammstrind.response
 
 import android.graphics.Bitmap
 

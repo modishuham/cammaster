@@ -20,8 +20,11 @@
             android:id="@+id/action_homeFragment_to_barcodeFragment"
             app:destination="@id/barcodeFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_docDetailFragment"
-            app:destination="@id/docDetailFragment" />
+            android:id="@+id/action_homeFragment_to_docListFragment"
+            app:destination="@id/docListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pdfListFragment"
+            app:destination="@id/pdfListFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -55,5 +58,31 @@
             android:name="docImage"
             app:argType="android.graphics.Bitmap"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/docListFragment"
+        android:name="com.m.cammstrind.ui.docList.DocListFragment"
+        android:label="DocListFragment"
+        tools:layout="@layout/fragment_doc_list">
+        <action
+            android:id="@+id/action_docListFragment_to_docDetailFragment"
+            app:destination="@id/docDetailFragment" />
+        <argument
+            android:name="docType"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/pdfListFragment"
+        android:name="com.m.cammstrind.ui.pdfList.PdfListFragment"
+        android:label="PdfListFragment"
+        tools:layout="@layout/fragment_pdf_list">
+        <argument
+            android:name="docType"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_pdfListFragment_to_docDetailFragment"
+            app:destination="@id/docDetailFragment" />
     </fragment>
 </navigation>
