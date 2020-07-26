@@ -86,7 +86,7 @@ class HomeFragment : Fragment() {
                 if (!mFolder.exists()) {
                     mFolder.mkdir()
                 }
-                val outFile = File(mFolder, "$imageName.png")
+                val outFile = File(mFolder, "$imageName.jpg")
                 outStream = FileOutputStream(outFile)
                 bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                 outStream.flush()

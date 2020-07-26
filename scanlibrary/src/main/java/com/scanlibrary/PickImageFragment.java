@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,7 +64,7 @@ public class PickImageFragment extends Fragment {
 
     private void clearTempImages() {
         try {
-            File tempFolder = new File(ScanConstants.IMAGE_PATH);
+            File tempFolder = new File(getActivity().getExternalFilesDir(null), Environment.DIRECTORY_PICTURES);
             for (File f : tempFolder.listFiles())
                 f.delete();
         } catch (Exception e) {
@@ -178,6 +180,44 @@ public class PickImageFragment extends Fragment {
         Bitmap original
                 = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
-        return original;
+        return getUnRotatedBitmap(fileDescriptor, original);
+    }
+
+    private Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+
+    private Bitmap getUnRotatedBitmap(AssetFileDescriptor fileDescriptor, Bitmap original) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                ExifInterface ei = new ExifInterface(fileDescriptor.getFileDescriptor());
+                int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
+                Bitmap rotatedBitmap;
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotatedBitmap = rotateImage(original, 90);
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotatedBitmap = rotateImage(original, 180);
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotatedBitmap = rotateImage(original, 270);
+                        break;
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    default:
+                        rotatedBitmap = original;
+                }
+                return rotatedBitmap;
+            } else {
+                return original;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return original;
+        }
     }
 }
