@@ -15,7 +15,10 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
 
     private var docsList: ArrayList<DOC> = ArrayList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocsViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DocsViewHolder {
         return DocsViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_doc, parent, false)
         )
@@ -41,13 +44,8 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
         private val docName = itemView.findViewById<TextView>(R.id.tv_doc_name)
 
         fun bind(doc: DOC) {
-            if (doc.docType == "pdf") {
-                docImage.setImageDrawable(itemView.resources.getDrawable(R.drawable.ic_pdf, null))
-            } else {
-                docImage.setImageBitmap(doc.docImage)
-            }
+            docImage.setImageBitmap(doc.docImage)
             docName.text = doc.docName
-            docTypeImage.setImageDrawable(itemView.resources.getDrawable(R.drawable.ic_pdf, null))
 
             itemView.setOnClickListener {
                 val bundle = bundleOf(

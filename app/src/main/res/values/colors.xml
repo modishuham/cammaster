@@ -7,4 +7,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGray">#4D4D4D</color>
+    <color name="colorCardBack">#262035</color>
 </resources>

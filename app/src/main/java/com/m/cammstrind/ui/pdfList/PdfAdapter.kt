@@ -1,64 +1,58 @@
 package com.m.cammstrind.ui.pdfList
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.github.pdfviewer.PDFView
 import com.m.cammstrind.R
-import com.m.cammstrind.response.DOC
+import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
 
-    private var docsList: ArrayList<DOC> = ArrayList()
+    private var pdfList: ArrayList<File> = ArrayList()
+    private var activity: Activity? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocsViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DocsViewHolder {
         return DocsViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_doc, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_pdf, parent, false)
         )
     }
 
     override fun getItemCount(): Int {
-        return docsList.size
+        return pdfList.size
     }
 
     override fun onBindViewHolder(holder: DocsViewHolder, position: Int) {
-        holder.bind(docsList[position])
+        holder.bind(pdfList[position])
     }
 
-    fun setDocsList(docsList: ArrayList<DOC>) {
-        this.docsList.clear()
-        this.docsList = docsList
+    fun setDocsList(pdfList: ArrayList<File>) {
+        this.pdfList.clear()
+        this.pdfList = pdfList
         notifyDataSetChanged()
     }
 
+    fun setActivity(activity: Activity) {
+        this.activity = activity
+    }
+
     inner class DocsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val docImage = itemView.findViewById<ImageView>(R.id.iv_doc)
-        private val docTypeImage = itemView.findViewById<ImageView>(R.id.iv_doc_type)
-        private val docName = itemView.findViewById<TextView>(R.id.tv_doc_name)
-
-        fun bind(doc: DOC) {
-            if (doc.docType == "pdf") {
-                docImage.setImageDrawable(itemView.resources.getDrawable(R.drawable.ic_pdf, null))
-            } else {
-                docImage.setImageBitmap(doc.docImage)
-            }
-            docName.text = doc.docName
-            docTypeImage.setImageDrawable(itemView.resources.getDrawable(R.drawable.ic_pdf, null))
-
+        private val pdfDate = itemView.findViewById<TextView>(R.id.tv_pdf_date)
+        private val pdfName = itemView.findViewById<TextView>(R.id.tv_pdf_name)
+        fun bind(pdf: File) {
+            pdfName.text = pdf.name
+            pdfDate.text = Date(pdf.lastModified()).toString()
             itemView.setOnClickListener {
-                val bundle = bundleOf(
-                    "docName" to doc.docName,
-                    "docImage" to doc.docImage,
-                    "docPath" to doc.docPath
-                )
-                it.findNavController()
-                    .navigate(R.id.action_pdfListFragment_to_docDetailFragment, bundle)
+                PDFView.with(activity).setfilepath(pdf.path).start()
             }
         }
-
     }
 }
