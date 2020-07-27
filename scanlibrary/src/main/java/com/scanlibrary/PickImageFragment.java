@@ -172,10 +172,24 @@ public class PickImageFragment extends Fragment {
     }
 
     private Bitmap getBitmap(Uri selectedImg) throws IOException {
+        int inSampleSize = 2;
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImg);
+            if (bitmap.getByteCount() > 5000000) {
+                inSampleSize = 6;
+            } else if (bitmap.getByteCount() > 45000000) {
+                inSampleSize = 5;
+            } else if (bitmap.getByteCount() > 30000000) {
+                inSampleSize = 4;
+            } else if (bitmap.getByteCount() > 20000000) {
+                inSampleSize = 3;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2;
-        AssetFileDescriptor fileDescriptor = null;
-        fileDescriptor =
+        options.inSampleSize = inSampleSize;
+        AssetFileDescriptor fileDescriptor =
                 getActivity().getContentResolver().openAssetFileDescriptor(selectedImg, "r");
         Bitmap original
                 = BitmapFactory.decodeFileDescriptor(
