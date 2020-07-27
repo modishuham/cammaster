@@ -1,14 +1,16 @@
 package com.m.cammstrind.ui.pdfList
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.m.cammstrind.R
-import kotlinx.android.synthetic.main.fragment_doc_list.*
+import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
 
 class PdfListFragment : Fragment() {
@@ -33,8 +35,9 @@ class PdfListFragment : Fragment() {
 
         if (pdfList.isEmpty()) {
             requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
-            rv_doc_list.adapter = adapter
-            adapter.setActivity(requireActivity())
+            rv_pdf_list.adapter = adapter
+            rv_pdf_list.setHasFixedSize(true)
+            adapter.setActivity(requireActivity(), this)
             getScannedDocsList()
         }
     }
@@ -69,5 +72,23 @@ class PdfListFragment : Fragment() {
                 }
             }
         }).start()
+    }
+
+    fun sharePdf(pdf: File) {
+        try {
+            val intent = Intent(Intent.ACTION_SEND)
+            val uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.scanlibrary.provider1",
+                File(pdf.path)
+            )
+            intent.setType("application/pdf");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.type = "image/*"
+            startActivity(Intent.createChooser(intent, "Share"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
