@@ -119,9 +119,15 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     public native float[] getPoints(Bitmap bitmap);
 
-    public Bitmap getLeftRotateBitmap(Bitmap bitmap) {
+    public Bitmap getRotateBitmap(Bitmap bitmap) {
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public Bitmap getRotateBitmap(Bitmap bitmap, int rotationValue) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotationValue);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 

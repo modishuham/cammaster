@@ -71,25 +71,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/rotate_left"
+            android:id="@+id/rotate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_rotate_left"
-            android:text="Left Rotate"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:id="@+id/rotate_right"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_rotate_right"
-            android:singleLine="true"
-            android:text="Right Rotate"
+            android:text="Rotate"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 
@@ -114,6 +102,18 @@
             android:drawableTop="@drawable/ic_brightness"
             android:singleLine="true"
             android:text="Brightness"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/contrastButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/ic_contrast"
+            android:singleLine="true"
+            android:text="Contrast"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 
@@ -182,11 +182,22 @@
             android:progressTint="@color/colorWhite"
             android:thumbTint="@color/colorPurple" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/contrastPopup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/topBar2"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Sharpness"
+            android:text="Contrast"
             android:textColor="@color/colorWhite" />
 
         <SeekBar

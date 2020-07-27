@@ -32,14 +32,18 @@ public class ResultFragment extends Fragment {
     private Bitmap original;
     private Bitmap transformed;
     private Bitmap transformedBR;
+    private Bitmap transformedOriginal;
     private Button brightnessButton, originalButton,
             magicColorButton, grayModeButton, bwButton,
-            leftRotate, rightRotate, mirror, doneButton,
-            backButton;
+            rotate, mirror, doneButton, backButton, contrastButton;
     private LinearLayout brightnessPopup;
+    private LinearLayout contrastPopup;
     private SeekBar mBrightnessSeekBar, mSharpnessSeekBar;
     private Boolean isBrightnessPopupVisible = false;
+    private Boolean isContrastPopupVisible = false;
     private static ProgressDialogFragment progressDialogFragment;
+    private int rotationValue = 0;
+    private boolean mirrorValue = false;
 
     public ResultFragment() {
     }
@@ -57,13 +61,14 @@ public class ResultFragment extends Fragment {
         magicColorButton = view.findViewById(R.id.magicColor);
         grayModeButton = view.findViewById(R.id.grayMode);
         bwButton = view.findViewById(R.id.BWMode);
-        leftRotate = view.findViewById(R.id.rotate_left);
-        rightRotate = view.findViewById(R.id.rotate_right);
+        rotate = view.findViewById(R.id.rotate);
+        contrastButton = view.findViewById(R.id.contrastButton);
         mirror = view.findViewById(R.id.mirror);
         doneButton = view.findViewById(R.id.doneButton);
         backButton = view.findViewById(R.id.backButton);
         brightnessButton = view.findViewById(R.id.brightnessButton);
         brightnessPopup = view.findViewById(R.id.brightnessPopup);
+        contrastPopup = view.findViewById(R.id.contrastPopup);
         mBrightnessSeekBar = view.findViewById(R.id.seek_brightness);
         mSharpnessSeekBar = view.findViewById(R.id.seek_sharpness);
         initClickListener();
@@ -76,8 +81,8 @@ public class ResultFragment extends Fragment {
         magicColorButton.setOnClickListener(new MagicColorButtonClickListener());
         grayModeButton.setOnClickListener(new GrayButtonClickListener());
         bwButton.setOnClickListener(new BWButtonClickListener());
-        leftRotate.setOnClickListener(new LeftRotateButtonClickListener());
-        rightRotate.setOnClickListener(new RightRotateButtonClickListener());
+        rotate.setOnClickListener(new RotateButtonClickListener());
+        contrastButton.setOnClickListener(new ContrastButtonClickListener());
         mirror.setOnClickListener(new MirrorButtonClickListener());
         doneButton.setOnClickListener(new DoneButtonClickListener());
         backButton.setOnClickListener(new BackButtonClickListener());
@@ -94,6 +99,8 @@ public class ResultFragment extends Fragment {
                     if (transformed == null)
                         transformed = original;
                     transformedBR = changeBitmapContrastBrightness(transformed, 1 + progress, 0);
+                    if (progress > 1)
+                        mBrightnessSeekBar.setProgress(0);
                 } catch (Exception e) {
                     transformed = original;
                     scannedImageView.setImageBitmap(original);
@@ -120,6 +127,8 @@ public class ResultFragment extends Fragment {
                     if (transformed == null)
                         transformed = original;
                     transformedBR = changeBitmapContrastBrightness(transformed, 1, progress + 1);
+                    if (progress > 1)
+                        mSharpnessSeekBar.setProgress(0);
                 } catch (Exception e) {
                     transformed = original;
                     scannedImageView.setImageBitmap(original);
@@ -240,7 +249,10 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getBWBitmap(original);
+                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        if (mirrorValue)
+                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) getActivity()).getBWBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -266,7 +278,7 @@ public class ResultFragment extends Fragment {
         }
     }
 
-    private class LeftRotateButtonClickListener implements View.OnClickListener {
+    private class RotateButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
@@ -277,7 +289,11 @@ public class ResultFragment extends Fragment {
                         if (transformed == null) {
                             transformed = original;
                         }
-                        transformed = ((ScanActivity) getActivity()).getLeftRotateBitmap(transformed);
+                        if (rotationValue > 360) {
+                            rotationValue = 0;
+                        }
+                        rotationValue = rotationValue + 90;
+                        transformed = ((ScanActivity) getActivity()).getRotateBitmap(transformed);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -303,40 +319,17 @@ public class ResultFragment extends Fragment {
         }
     }
 
-    private class RightRotateButtonClickListener implements View.OnClickListener {
+    private class ContrastButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            showProgressDialog(getResources().getString(R.string.applying_filter));
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (transformed == null) {
-                            transformed = original;
-                        }
-                        transformed = ((ScanActivity) getActivity()).getRightRotateBitmap(transformed);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
-                    });
-                }
-            });
+            if (!isContrastPopupVisible) {
+                contrastPopup.setVisibility(View.VISIBLE);
+                brightnessPopup.setVisibility(View.GONE);
+                isContrastPopupVisible = true;
+            } else {
+                contrastPopup.setVisibility(View.GONE);
+                isContrastPopupVisible = false;
+            }
         }
     }
 
@@ -352,6 +345,7 @@ public class ResultFragment extends Fragment {
                             transformed = original;
                         }
                         transformed = ((ScanActivity) getActivity()).getMirrorBitmap(transformed);
+                        mirrorValue = !mirrorValue;
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -385,7 +379,10 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getMagicColorBitmap(original);
+                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        if (mirrorValue)
+                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) getActivity()).getMagicColorBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -416,6 +413,8 @@ public class ResultFragment extends Fragment {
         public void onClick(View v) {
             try {
                 showProgressDialog(getResources().getString(R.string.applying_filter));
+                rotationValue = 0;
+                mirrorValue = false;
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
                 ResetBrightness();
@@ -435,7 +434,10 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getGrayBitmap(original);
+                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        if (mirrorValue)
+                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) getActivity()).getGrayBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -466,6 +468,7 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             if (!isBrightnessPopupVisible) {
                 brightnessPopup.setVisibility(View.VISIBLE);
+                contrastPopup.setVisibility(View.GONE);
                 isBrightnessPopupVisible = true;
             } else {
                 brightnessPopup.setVisibility(View.GONE);
