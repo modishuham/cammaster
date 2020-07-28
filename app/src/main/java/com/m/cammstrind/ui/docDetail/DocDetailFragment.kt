@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
+import com.m.cammstrind.ui.docList.DocDeleteHandler
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_detail.*
 import java.io.File
@@ -20,6 +21,7 @@ class DocDetailFragment : Fragment() {
 
     private var docPath: String = ""
     private var docName: String = ""
+    private var docPosition: Int? = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,11 +33,13 @@ class DocDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        DocDeleteHandler.deletedDocPosition = -1
         docName = arguments?.getString("docName").toString()
         tv_doc_name_detail.text = docName
         val image =
             arguments?.getParcelable<Bitmap>("docImage")
         docPath = arguments?.getString("docPath").toString()
+        docPosition = arguments?.getInt("docPosition")
         //iv_doc_detail.setImageBitmap(image)
 
         btn_share.setOnClickListener {
@@ -49,6 +53,7 @@ class DocDetailFragment : Fragment() {
                 View.OnClickListener {
                     deleteDoc()
                     DialogUtils.dismissDialog()
+                    DocDeleteHandler.deletedDocPosition = docPosition!!
                     findNavController().popBackStack()
                 }
             )

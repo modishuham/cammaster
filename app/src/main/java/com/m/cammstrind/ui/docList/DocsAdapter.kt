@@ -96,7 +96,8 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                     val bundle = bundleOf(
                         "docName" to doc.docName,
                         "docImage" to doc.docImage,
-                        "docPath" to doc.docPath
+                        "docPath" to doc.docPath,
+                        "docPosition" to adapterPosition
                     )
                     it.findNavController()
                         .navigate(R.id.action_docListFragment_to_docDetailFragment, bundle)

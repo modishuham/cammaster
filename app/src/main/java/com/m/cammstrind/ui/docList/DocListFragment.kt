@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
 import com.m.cammstrind.response.DOC
+import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_doc_list.*
 import java.io.File
@@ -37,6 +38,16 @@ class DocListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (DocDeleteHandler.deletedDocPosition != -1 && docList.isNotEmpty()) {
+            AppUtils.deleteDoc(
+                requireContext(),
+                docList[DocDeleteHandler.deletedDocPosition].docPath
+            )
+            docList.removeAt(DocDeleteHandler.deletedDocPosition)
+            adapter.notifyItemRemoved(DocDeleteHandler.deletedDocPosition)
+            adapter.notifyItemRangeChanged(DocDeleteHandler.deletedDocPosition, docList.size)
+        }
 
         if (docList.isEmpty()) {
             requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE

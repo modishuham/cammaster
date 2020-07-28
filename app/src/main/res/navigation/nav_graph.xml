@@ -58,6 +58,10 @@
             android:name="docImage"
             app:argType="android.graphics.Bitmap"
             app:nullable="true" />
+        <argument
+            android:name="docPosition"
+            android:defaultValue="-1"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/docListFragment"
