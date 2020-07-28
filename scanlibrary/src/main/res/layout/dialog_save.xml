@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="300dp"
-    android:background="@color/colorGray">
+    android:background="@color/colorPrimary"
+    android:elevation="10dp">
 
     <EditText
         android:id="@+id/et_file_name"
@@ -12,56 +12,48 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="70dp"
         android:layout_marginEnd="20dp"
-        android:background="@color/colorWhite"
+        android:autofillHints="Enter your file name"
+        android:background="@drawable/shape_edit_text_back"
         android:digits="0123456789qwertzuiopasdfghjklyxcvbnm_@."
-        android:fontFamily="@font/ubuntu"
-        android:hint="@string/name_your_doc"
+        android:hint="@string/file_name"
         android:inputType="text"
         android:maxLength="30"
         android:maxLines="1"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:textColor="@color/colorBlack"
-        android:textColorHint="@color/colorBlack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColorHint="@color/colorBlack" />
 
     <Button
         android:id="@+id/btn_save_img"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/et_file_name"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/circle_background"
         android:drawableStart="@drawable/ic_original"
-        android:fontFamily="@font/ubuntu_light"
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:text="@string/save_as_image"
         android:textAllCaps="false"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintEnd_toEndOf="@+id/et_file_name"
-        app:layout_constraintStart_toStartOf="@+id/et_file_name"
-        app:layout_constraintTop_toBottomOf="@+id/et_file_name" />
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/btn_save_pdf"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/btn_save_img"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/circle_background"
         android:drawableStart="@drawable/ic_pdf"
-        android:fontFamily="@font/ubuntu_light"
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:text="@string/save_as_pdf"
         android:textAllCaps="false"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintEnd_toEndOf="@+id/btn_save_img"
-        app:layout_constraintStart_toStartOf="@+id/btn_save_img"
-        app:layout_constraintTop_toBottomOf="@+id/btn_save_img" />
+        android:textColor="@color/colorWhite" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

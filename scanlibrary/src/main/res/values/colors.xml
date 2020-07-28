@@ -13,4 +13,5 @@
     <color name="colorAppBack">#121212</color>
     <color name="colorAccent">#280A50</color>
     <color name="colorAccentLight">#3D1472</color>
+    <color name="colorPrimary">#3B3F48</color>
 </resources>

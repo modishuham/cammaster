@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">Cam Master</string>
-    <string name="cammaster">CamMaster</string>
-    <string name="mydocs">MyDocs</string>
-    <string name="no_data_found">No Data Found</string>
-    <string name="ocr_text_detection">OCR (Text Detection)</string>
-    <string name="barcode_scanning">Barcode Scanning</string>
+    <string name="cam_master">CamMaster</string>
+    <string name="no_data_found">No Data Found</string>>
     <string name="about">About</string>
     <string name="camera">Camera</string>
     <string name="files">Files</string>
@@ -16,5 +13,6 @@
     <string name="scanned_images">Scanned Images</string>
     <string name="scanned_pdf">Scanned PDF</string>
     <string name="text_recognition">Text Recognition</string>
-    <string name="barcode_scanner">Barcode Scanner</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="share_cam_master">Share CamMaster</string>
 </resources>

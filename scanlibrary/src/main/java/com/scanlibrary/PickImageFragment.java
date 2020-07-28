@@ -29,8 +29,6 @@ import java.util.Date;
 public class PickImageFragment extends Fragment {
 
     private View view;
-    private ImageButton cameraButton;
-    private ImageButton galleryButton;
     private Uri fileUri;
     private IScanner scanner;
 
@@ -51,9 +49,9 @@ public class PickImageFragment extends Fragment {
     }
 
     private void init() {
-        cameraButton = (ImageButton) view.findViewById(R.id.cameraButton);
+        ImageButton cameraButton = view.findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new CameraButtonClickListener());
-        galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
+        ImageButton galleryButton = view.findViewById(R.id.selectButton);
         galleryButton.setOnClickListener(new GalleryClickListener());
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
