@@ -85,6 +85,13 @@ class PdfListFragment : Fragment() {
                     requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility =
                         View.GONE
                 }
+            } else {
+                requireActivity().runOnUiThread {
+                    requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
+                        View.VISIBLE
+                    requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility =
+                        View.GONE
+                }
             }
         }).start()
     }

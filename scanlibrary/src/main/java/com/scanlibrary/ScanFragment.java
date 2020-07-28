@@ -1,8 +1,6 @@
 package com.scanlibrary;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -20,6 +18,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ import java.util.Map;
 
 public class ScanFragment extends Fragment {
 
-    private Button scanButton;
     private ImageView sourceImageView;
     private FrameLayout sourceFrame;
     private PolygonView polygonView;
@@ -38,7 +38,7 @@ public class ScanFragment extends Fragment {
     private Bitmap original;
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         if (!(activity instanceof IScanner)) {
             throw new ClassCastException("Activity must implement IScanner");
@@ -48,7 +48,7 @@ public class ScanFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.scan_fragment_layout, null);
+        view = inflater.inflate(R.layout.scan_fragment_layout, container, false);
         init();
         return view;
     }
@@ -58,11 +58,11 @@ public class ScanFragment extends Fragment {
     }
 
     private void init() {
-        sourceImageView = (ImageView) view.findViewById(R.id.sourceImageView);
-        scanButton = (Button) view.findViewById(R.id.scanButton);
+        sourceImageView = view.findViewById(R.id.sourceImageView);
+        Button scanButton = view.findViewById(R.id.scanButton);
         scanButton.setOnClickListener(new ScanButtonClickListener());
-        sourceFrame = (FrameLayout) view.findViewById(R.id.sourceFrame);
-        polygonView = (PolygonView) view.findViewById(R.id.polygonView);
+        sourceFrame = view.findViewById(R.id.sourceFrame);
+        polygonView = view.findViewById(R.id.polygonView);
         sourceFrame.post(new Runnable() {
             @Override
             public void run() {
@@ -77,8 +77,8 @@ public class ScanFragment extends Fragment {
     private Bitmap getBitmap() {
         Uri uri = getUri();
         try {
-            Bitmap bitmap = Utils.getBitmap(getActivity(), uri);
-            getActivity().getContentResolver().delete(uri, null, null);
+            Bitmap bitmap = Utils.getBitmap(requireActivity(), uri);
+            requireActivity().getContentResolver().delete(uri, null, null);
             return bitmap;
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,8 +87,8 @@ public class ScanFragment extends Fragment {
     }
 
     private Uri getUri() {
-        Uri uri = getArguments().getParcelable(ScanConstants.SELECTED_BITMAP);
-        return uri;
+        assert getArguments() != null;
+        return getArguments().getParcelable(ScanConstants.SELECTED_BITMAP);
     }
 
     private void setBitmap(Bitmap original) {
@@ -106,12 +106,11 @@ public class ScanFragment extends Fragment {
 
     private Map<Integer, PointF> getEdgePoints(Bitmap tempBitmap) {
         List<PointF> pointFs = getContourEdgePoints(tempBitmap);
-        Map<Integer, PointF> orderedPoints = orderedValidEdgePoints(tempBitmap, pointFs);
-        return orderedPoints;
+        return orderedValidEdgePoints(tempBitmap, pointFs);
     }
 
     private List<PointF> getContourEdgePoints(Bitmap tempBitmap) {
-        float[] points = ((ScanActivity) getActivity()).getPoints(tempBitmap);
+        float[] points = ((ScanActivity) requireActivity()).getPoints(tempBitmap);
         float x1 = points[0];
         float x2 = points[1];
         float x3 = points[2];
@@ -161,7 +160,7 @@ public class ScanFragment extends Fragment {
 
     private void showErrorDialog() {
         SingleButtonDialogFragment fragment = new SingleButtonDialogFragment(R.string.ok, getString(R.string.cantCrop), "Error", true);
-        FragmentManager fm = getActivity().getFragmentManager();
+        FragmentManager fm = getChildFragmentManager();
         fragment.show(fm, SingleButtonDialogFragment.class.toString());
     }
 
@@ -176,8 +175,8 @@ public class ScanFragment extends Fragment {
     }
 
     private Bitmap getScannedBitmap(Bitmap original, Map<Integer, PointF> points) {
-        int width = original.getWidth();
-        int height = original.getHeight();
+        //int width = original.getWidth();
+        //int height = original.getHeight();
         float xRatio = (float) original.getWidth() / sourceImageView.getWidth();
         float yRatio = (float) original.getHeight() / sourceImageView.getHeight();
 
@@ -190,8 +189,7 @@ public class ScanFragment extends Fragment {
         float y3 = (points.get(2).y) * yRatio;
         float y4 = (points.get(3).y) * yRatio;
         Log.d("", "POints(" + x1 + "," + y1 + ")(" + x2 + "," + y2 + ")(" + x3 + "," + y3 + ")(" + x4 + "," + y4 + ")");
-        Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
-        return _bitmap;
+        return ((ScanActivity) requireActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
     private class ScanAsyncTask extends AsyncTask<Void, Void, Bitmap> {
@@ -210,8 +208,8 @@ public class ScanFragment extends Fragment {
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            Bitmap bitmap =  getScannedBitmap(original, points);
-            Uri uri = Utils.getUri(getActivity(), bitmap);
+            Bitmap bitmap = getScannedBitmap(original, points);
+            Uri uri = Utils.getUri(requireActivity(), bitmap);
             scanner.onScanFinish(uri);
             return bitmap;
         }
@@ -226,7 +224,7 @@ public class ScanFragment extends Fragment {
 
     protected void showProgressDialog(String message) {
         progressDialogFragment = new ProgressDialogFragment(message);
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getChildFragmentManager();
         progressDialogFragment.show(fm, ProgressDialogFragment.class.toString());
     }
 

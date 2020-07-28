@@ -1,7 +1,7 @@
 package com.scanlibrary;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -20,11 +20,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class PickImageFragment extends Fragment {
 
@@ -33,17 +35,17 @@ public class PickImageFragment extends Fragment {
     private IScanner scanner;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof IScanner)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof IScanner)) {
             throw new ClassCastException("Activity must implement IScanner");
         }
-        this.scanner = (IScanner) activity;
+        this.scanner = (IScanner) context;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.pick_image_fragment, null);
+        view = inflater.inflate(R.layout.pick_image_fragment, container, false);
         init();
         return view;
     }
@@ -56,13 +58,13 @@ public class PickImageFragment extends Fragment {
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
-            getActivity().finish();
+            requireActivity().finish();
         }
     }
 
     private void clearTempImages() {
         try {
-            File tempFolder = new File(getActivity().getExternalFilesDir(null), Environment.DIRECTORY_PICTURES);
+            File tempFolder = new File(requireActivity().getExternalFilesDir(null), Environment.DIRECTORY_PICTURES);
             for (File f : tempFolder.listFiles())
                 f.delete();
         } catch (Exception e) {
@@ -80,11 +82,15 @@ public class PickImageFragment extends Fragment {
     }
 
     private boolean isIntentPreferenceSet() {
-        int preference = getArguments().getInt(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+        int preference = 0;
+        if (getArguments() != null) {
+            preference = getArguments().getInt(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+        }
         return preference != 0;
     }
 
     private int getIntentPreference() {
+        assert getArguments() != null;
         return getArguments().getInt(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
     }
 
@@ -113,10 +119,12 @@ public class PickImageFragment extends Fragment {
     public void openCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         File file = createImageFile();
-        boolean isDirectoryCreated = file.getParentFile().mkdirs();
-        Log.d("", "openCamera: isDirectoryCreated: " + isDirectoryCreated);
+        if (file.getParentFile() != null) {
+            boolean isDirectoryCreated = file.getParentFile().mkdirs();
+            Log.d("", "openCamera: isDirectoryCreated: " + isDirectoryCreated);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(),
+            Uri tempFileUri = FileProvider.getUriForFile(requireActivity().getApplicationContext(),
                     "com.scanlibrary.provider1", // As defined in Manifest
                     file);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
@@ -129,9 +137,9 @@ public class PickImageFragment extends Fragment {
 
     private File createImageFile() {
         clearTempImages();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new
                 Date());
-        File file = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "IMG_" + timeStamp +
+        File file = new File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "IMG_" + timeStamp +
                 ".jpg");
         fileUri = Uri.fromFile(file);
         return file;
@@ -156,7 +164,7 @@ public class PickImageFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            getActivity().finish();
+            requireActivity().finish();
         }
         if (bitmap != null) {
             postImagePick(bitmap);
@@ -164,7 +172,7 @@ public class PickImageFragment extends Fragment {
     }
 
     protected void postImagePick(Bitmap bitmap) {
-        Uri uri = Utils.getUri(getActivity(), bitmap);
+        Uri uri = Utils.getUri(requireActivity(), bitmap);
         bitmap.recycle();
         scanner.onBitmapSelect(uri);
     }
@@ -172,7 +180,7 @@ public class PickImageFragment extends Fragment {
     private Bitmap getBitmap(Uri selectedImg) throws IOException {
         int inSampleSize = 2;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImg);
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImg);
             if (bitmap.getByteCount() > 30000000) {
                 inSampleSize = 4;
             } else if (bitmap.getByteCount() > 20000000) {
@@ -184,7 +192,7 @@ public class PickImageFragment extends Fragment {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         AssetFileDescriptor fileDescriptor =
-                getActivity().getContentResolver().openAssetFileDescriptor(selectedImg, "r");
+                requireActivity().getContentResolver().openAssetFileDescriptor(selectedImg, "r");
         Bitmap original
                 = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);

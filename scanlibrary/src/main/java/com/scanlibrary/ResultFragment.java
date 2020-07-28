@@ -2,8 +2,6 @@ package com.scanlibrary;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -22,6 +20,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.io.IOException;
 
@@ -45,12 +46,9 @@ public class ResultFragment extends Fragment {
     private int rotationValue = 0;
     private boolean mirrorValue = false;
 
-    public ResultFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.result_layout, null);
+        view = inflater.inflate(R.layout.result_layout, container, false);
         init();
         return view;
     }
@@ -153,8 +151,8 @@ public class ResultFragment extends Fragment {
     private Bitmap getBitmap() {
         Uri uri = getUri();
         try {
-            original = Utils.getBitmap(getActivity(), uri);
-            getActivity().getContentResolver().delete(uri, null, null);
+            original = Utils.getBitmap(requireActivity(), uri);
+            requireActivity().getContentResolver().delete(uri, null, null);
             return original;
         } catch (IOException e) {
             e.printStackTrace();
@@ -163,6 +161,7 @@ public class ResultFragment extends Fragment {
     }
 
     private Uri getUri() {
+        assert getArguments() != null;
         return getArguments().getParcelable(ScanConstants.SCANNED_RESULT);
     }
 
@@ -182,7 +181,7 @@ public class ResultFragment extends Fragment {
                     bitmap = original;
                 }
                 final Bitmap finalBitmap = bitmap;
-                Dialog dialog = new Dialog(getActivity());
+                Dialog dialog = new Dialog(requireActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.dialog_save);
@@ -196,14 +195,14 @@ public class ResultFragment extends Fragment {
                             docName.setError("Can't Empty");
                         } else {
                             Intent data = new Intent();
-                            Uri uri = Utils.getUri(getActivity(), finalBitmap);
+                            Uri uri = Utils.getUri(requireActivity(), finalBitmap);
                             data.putExtra(ScanConstants.SCANNED_RESULT, uri);
                             data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "IMG");
                             data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
-                            getActivity().setResult(Activity.RESULT_OK, data);
+                            requireActivity().setResult(Activity.RESULT_OK, data);
                             original.recycle();
                             System.gc();
-                            getActivity().finish();
+                            requireActivity().finish();
                         }
                     }
                 });
@@ -214,14 +213,14 @@ public class ResultFragment extends Fragment {
                             docName.setError("Can't Empty");
                         } else {
                             Intent data = new Intent();
-                            Uri uri = Utils.getUri(getActivity(), finalBitmap);
+                            Uri uri = Utils.getUri(requireActivity(), finalBitmap);
                             data.putExtra(ScanConstants.SCANNED_RESULT, uri);
                             data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "PDF");
                             data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
-                            getActivity().setResult(Activity.RESULT_OK, data);
+                            requireActivity().setResult(Activity.RESULT_OK, data);
                             original.recycle();
                             System.gc();
-                            getActivity().finish();
+                            requireActivity().finish();
                         }
                     }
                 });
@@ -237,7 +236,7 @@ public class ResultFragment extends Fragment {
         public void onClick(View v) {
             original.recycle();
             System.gc();
-            getActivity().finish();
+            requireActivity().finish();
         }
     }
 
@@ -249,13 +248,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
-                        transformed = ((ScanActivity) getActivity()).getBWBitmap(transformedOriginal);
+                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) requireContext()).getBWBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 transformed = original;
@@ -266,7 +265,7 @@ public class ResultFragment extends Fragment {
                             }
                         });
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
@@ -293,10 +292,10 @@ public class ResultFragment extends Fragment {
                             rotationValue = 0;
                         }
                         rotationValue = rotationValue + 90;
-                        transformed = ((ScanActivity) getActivity()).getRotateBitmap(transformed);
+                        transformed = ((ScanActivity) requireContext()).getRotateBitmap(transformed);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 transformed = original;
@@ -307,7 +306,7 @@ public class ResultFragment extends Fragment {
                             }
                         });
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
@@ -344,11 +343,11 @@ public class ResultFragment extends Fragment {
                         if (transformed == null) {
                             transformed = original;
                         }
-                        transformed = ((ScanActivity) getActivity()).getMirrorBitmap(transformed);
+                        transformed = ((ScanActivity) requireContext()).getMirrorBitmap(transformed);
                         mirrorValue = !mirrorValue;
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 transformed = original;
@@ -359,7 +358,7 @@ public class ResultFragment extends Fragment {
                             }
                         });
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
@@ -379,13 +378,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
-                        transformed = ((ScanActivity) getActivity()).getMagicColorBitmap(transformedOriginal);
+                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 transformed = original;
@@ -396,7 +395,7 @@ public class ResultFragment extends Fragment {
                             }
                         });
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
@@ -434,13 +433,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformedOriginal = ((ScanActivity) getActivity()).getRotateBitmap(original, rotationValue);
+                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) getActivity()).getMirrorBitmap(transformedOriginal);
-                        transformed = ((ScanActivity) getActivity()).getGrayBitmap(transformedOriginal);
+                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
+                        transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 transformed = original;
@@ -451,7 +450,7 @@ public class ResultFragment extends Fragment {
                             }
                         });
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
@@ -512,7 +511,7 @@ public class ResultFragment extends Fragment {
         }
         progressDialogFragment = null;
         progressDialogFragment = new ProgressDialogFragment(message);
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getChildFragmentManager();
         progressDialogFragment.show(fm, ProgressDialogFragment.class.toString());
     }
 
