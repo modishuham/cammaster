@@ -21,6 +21,9 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
     private var pdfList: ArrayList<File> = ArrayList()
     private var activity: Activity? = null
 
+    private var isMultiSelect: Boolean = false
+    private var selectedFilesList: ArrayList<File> = ArrayList()
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -49,25 +52,108 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
         this.fragment = fragment
     }
 
+    fun resetMultiSelect() {
+        isMultiSelect = false
+        activity?.findViewById<ImageView>(R.id.iv_multi_share_pdf)?.visibility = View.GONE
+        selectedFilesList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun isMultiSelectEnabled(): Boolean {
+        return isMultiSelect
+    }
+
+    fun getMultiSelectedPdf(): ArrayList<File> {
+        return selectedFilesList
+    }
+
     inner class DocsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val pdfDate = itemView.findViewById<TextView>(R.id.tv_pdf_date)
         private val pdfName = itemView.findViewById<TextView>(R.id.tv_pdf_name)
         private val btnShare = itemView.findViewById<ImageView>(R.id.btn_pdf_share)
         private val btnDelete = itemView.findViewById<ImageView>(R.id.btn_pdf_delete)
+        private val ivPdf = itemView.findViewById<ImageView>(R.id.iv_item_pdf)
+
         fun bind(pdf: File) {
             pdfName.text = pdf.name
             pdfDate.text = getDateForDurationEvent(pdf.lastModified()).toString()
+
+            if (selectedFilesList.contains(pdf)) {
+                ivPdf.setImageDrawable(activity?.resources?.getDrawable(R.drawable.ic_select, null))
+                itemView.alpha = 0.7f
+                btnDelete.alpha = 0.0f
+                btnShare.alpha = 0.0f
+            } else {
+                ivPdf.setImageDrawable(activity?.resources?.getDrawable(R.drawable.ic_pdf, null))
+                itemView.alpha = 1.0f
+                btnDelete.alpha = 1.0f
+                btnShare.alpha = 1.0f
+            }
+
+            itemView.setOnLongClickListener {
+                if (!isMultiSelect) {
+                    isMultiSelect = true
+                    activity?.findViewById<ImageView>(R.id.iv_multi_share_pdf)?.visibility =
+                        View.VISIBLE
+                    itemView.alpha = 0.7f
+                    ivPdf.setImageDrawable(
+                        activity?.resources?.getDrawable(
+                            R.drawable.ic_select,
+                            null
+                        )
+                    )
+                    btnDelete.alpha = 0.0f
+                    btnShare.alpha = 0.0f
+                    selectedFilesList.add(pdf)
+                } else {
+                    resetMultiSelect()
+                }
+
+                return@setOnLongClickListener true
+            }
+
             itemView.setOnClickListener {
-                PDFView.with(activity).setfilepath(pdf.path).start()
+                if (!isMultiSelect) {
+                    PDFView.with(activity).setfilepath(pdf.path).start()
+                } else {
+                    if (!selectedFilesList.contains(pdf)) {
+                        itemView.alpha = 0.7f
+                        ivPdf.setImageDrawable(
+                            activity?.resources?.getDrawable(
+                                R.drawable.ic_select,
+                                null
+                            )
+                        )
+                        btnDelete.alpha = 0.0f
+                        btnShare.alpha = 0.0f
+                        selectedFilesList.add(pdf)
+                    } else {
+                        ivPdf.setImageDrawable(
+                            activity?.resources?.getDrawable(
+                                R.drawable.ic_pdf,
+                                null
+                            )
+                        )
+                        btnDelete.alpha = 1.0f
+                        btnShare.alpha = 1.0f
+                        itemView.alpha = 1.0f
+                        selectedFilesList.remove(pdf)
+                    }
+                }
             }
+
             btnShare.setOnClickListener {
-                fragment?.sharePdf(pdf)
+                if (!isMultiSelect)
+                    fragment?.sharePdf(pdf)
             }
+
             btnDelete.setOnClickListener {
-                AppUtils.deleteDoc(fragment?.requireContext()!!, pdf.name)
-                pdfList.removeAt(adapterPosition)
-                notifyItemRemoved(adapterPosition)
-                notifyItemRangeChanged(adapterPosition, pdfList.size)
+                if (!isMultiSelect) {
+                    AppUtils.deleteDoc(fragment?.requireContext()!!, pdf.name)
+                    pdfList.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                    notifyItemRangeChanged(adapterPosition, pdfList.size)
+                }
             }
         }
 

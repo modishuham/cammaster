@@ -1,12 +1,17 @@
 package com.m.cammstrind.ui.docList
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
 import com.m.cammstrind.response.DOC
 import com.m.cammstrind.utils.BitmapUtils
@@ -36,8 +41,22 @@ class DocListFragment : Fragment() {
         if (docList.isEmpty()) {
             requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
             rv_doc_list.adapter = adapter
+            rv_doc_list.setHasFixedSize(true)
+            adapter.setActivity(requireActivity(), this)
             getScannedDocsList()
         }
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.isMultiSelectEnabled())
+                    adapter.resetMultiSelect()
+                else
+                    findNavController().popBackStack()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        iv_multi_share_doc.setOnClickListener { shareMultipleDoc() }
     }
 
     private fun getScannedDocsList() {
@@ -80,5 +99,29 @@ class DocListFragment : Fragment() {
                 }
             }
         }).start()
+    }
+
+    private fun shareMultipleDoc() {
+        try {
+            val uriList: ArrayList<Uri> = ArrayList()
+            val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+
+            adapter.getMultiSelectedDOC().forEach {
+                val uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.scanlibrary.provider1",
+                    File(it.docPath)
+                )
+                uriList.add(uri)
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, uriList)
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.type = "image/*"
+            startActivity(Intent.createChooser(intent, "Share"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

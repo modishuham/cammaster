@@ -1,14 +1,17 @@
 package com.m.cammstrind.ui.pdfList
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
@@ -40,6 +43,18 @@ class PdfListFragment : Fragment() {
             adapter.setActivity(requireActivity(), this)
             getScannedDocsList()
         }
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapter.isMultiSelectEnabled())
+                    adapter.resetMultiSelect()
+                else
+                    findNavController().popBackStack()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        iv_multi_share_pdf.setOnClickListener { shareMultiplePdf() }
     }
 
     private fun getScannedDocsList() {
@@ -82,10 +97,34 @@ class PdfListFragment : Fragment() {
                 "com.scanlibrary.provider1",
                 File(pdf.path)
             )
-            intent.setType("application/pdf");
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.type = "application/pdf"
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.type = "image/*"
+            startActivity(Intent.createChooser(intent, "Share"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun shareMultiplePdf() {
+        try {
+            val uriList: ArrayList<Uri> = ArrayList()
+            val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+
+            adapter.getMultiSelectedPdf().forEach {
+                val uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.scanlibrary.provider1",
+                    File(it.path)
+                )
+                uriList.add(uri)
+            }
+            intent.type = "application/pdf"
+            intent.putExtra(Intent.EXTRA_STREAM, uriList)
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(Intent.createChooser(intent, "Share"))
         } catch (e: Exception) {
             e.printStackTrace()

@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
                 bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                 outStream.flush()
                 outStream.close()
-                showImageInGalary(outFile.toString())
+                //showImageInGalary(outFile.toString())
             } else {
                 val mediaStorageDir: String =
                     "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
