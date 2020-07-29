@@ -55,6 +55,10 @@ class HomeFragment : Fragment() {
             val bundle = bundleOf("docType" to resources.getString(R.string.scanned_pdf))
             findNavController().navigate(R.id.action_homeFragment_to_pdfListFragment, bundle)
         }
+
+        iv_ocr.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_ocrFragment)
+        }
     }
 
     private fun openCamera() {

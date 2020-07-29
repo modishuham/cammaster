@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "807972441830",
+    "firebase_url": "https://cammaster-6c674.firebaseio.com",
+    "project_id": "cammaster-6c674",
+    "storage_bucket": "cammaster-6c674.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807972441830:android:07eca87130256eea17f527",
+        "android_client_info": {
+          "package_name": "com.m.cammstrind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807972441830-qsbonk8uveoel3n6umdhojg5vug9ur3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFRMPLdmMoW8jR6dQThNYMqxIgIbkkOjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807972441830-qsbonk8uveoel3n6umdhojg5vug9ur3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

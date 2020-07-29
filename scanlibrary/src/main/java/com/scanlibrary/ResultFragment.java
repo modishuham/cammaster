@@ -45,6 +45,7 @@ public class ResultFragment extends Fragment {
     private static ProgressDialogFragment progressDialogFragment;
     private int rotationValue = 0;
     private boolean mirrorValue = false;
+    private Dialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -181,7 +182,7 @@ public class ResultFragment extends Fragment {
                     bitmap = original;
                 }
                 final Bitmap finalBitmap = bitmap;
-                Dialog dialog = new Dialog(requireActivity());
+                dialog = new Dialog(requireActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.dialog_save);
@@ -517,5 +518,13 @@ public class ResultFragment extends Fragment {
 
     protected synchronized void dismissDialog() {
         progressDialogFragment.dismissAllowingStateLoss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }

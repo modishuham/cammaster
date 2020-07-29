@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -179,8 +180,13 @@ public class PickImageFragment extends Fragment {
 
     private Bitmap getBitmap(Uri selectedImg) throws IOException {
         int inSampleSize = 2;
+        Bitmap bitmap = null;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImg);
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImg);
+            } else {
+                bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().getContentResolver(), selectedImg));
+            }
             if (bitmap.getByteCount() > 30000000) {
                 inSampleSize = 4;
             } else if (bitmap.getByteCount() > 20000000) {

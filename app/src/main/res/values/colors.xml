@@ -8,4 +8,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGray">#4D4D4D</color>
     <color name="colorCardBack">#262035</color>
+    <color name="colorRed">#FF5252</color>
+    <color name="colorHighlight">#E040FB</color>
 </resources>
