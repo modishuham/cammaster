@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
 import com.m.cammstrind.ui.docList.DocDeleteHandler
+import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_detail.*
 import java.io.File
@@ -21,6 +22,8 @@ class DocDetailFragment : Fragment() {
 
     private var docPath: String = ""
     private var docName: String = ""
+    private var docSize: String? = ""
+    private var docTime: String? = ""
     private var docPosition: Int? = -1
 
     override fun onCreateView(
@@ -41,6 +44,22 @@ class DocDetailFragment : Fragment() {
         docPath = arguments?.getString("docPath").toString()
         docPosition = arguments?.getInt("docPosition")
         //iv_doc_detail.setImageBitmap(image)
+        docSize = arguments?.getString("docSize")
+        docTime = arguments?.getString("docTime")
+
+        docSize?.let {
+            var size = ((it.toLong() / 1024) / 1024).toFloat()
+            if (size < 1) {
+                size = (it.toLong() / 1024).toFloat()
+                tv_doc_size.text = "$size KB"
+            } else {
+                tv_doc_size.text = "$size MB"
+            }
+        }
+
+        docTime?.let {
+            tv_doc_time.text = AppUtils.getDateForDurationEvent(it.toLong())
+        }
 
         btn_share.setOnClickListener {
             shareDoc()

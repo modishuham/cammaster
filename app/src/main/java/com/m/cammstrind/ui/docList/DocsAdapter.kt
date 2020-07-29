@@ -97,7 +97,9 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                         "docName" to doc.docName,
                         "docImage" to doc.docImage,
                         "docPath" to doc.docPath,
-                        "docPosition" to adapterPosition
+                        "docPosition" to adapterPosition,
+                        "docSize" to doc.docSize,
+                        "docTime" to doc.docTime
                     )
                     it.findNavController()
                         .navigate(R.id.action_docListFragment_to_docDetailFragment, bundle)

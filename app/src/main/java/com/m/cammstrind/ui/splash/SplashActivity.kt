@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import com.m.cammstrind.R
 import com.m.cammstrind.ui.home.HomeActivity
 
-
 class SplashActivity : AppCompatActivity() {
 
     private val requestPermissionCode = 999

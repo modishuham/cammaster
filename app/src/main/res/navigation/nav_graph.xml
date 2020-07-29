@@ -17,9 +17,6 @@
             android:id="@+id/action_homeFragment_to_ocrFragment"
             app:destination="@id/ocrFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_barcodeFragment"
-            app:destination="@id/barcodeFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_docListFragment"
             app:destination="@id/docListFragment" />
         <action
@@ -31,11 +28,6 @@
         android:name="com.m.cammstrind.ui.about.AboutFragment"
         android:label="AboutFragment"
         tools:layout="@layout/fragment_about" />
-    <fragment
-        android:id="@+id/barcodeFragment"
-        android:name="com.m.cammstrind.ui.barcode.BarcodeFragment"
-        android:label="BarcodeFragment"
-        tools:layout="@layout/fragment_barcode" />
     <fragment
         android:id="@+id/ocrFragment"
         android:name="com.m.cammstrind.ui.ocr.OcrFragment"
@@ -62,6 +54,14 @@
             android:name="docPosition"
             android:defaultValue="-1"
             app:argType="integer" />
+        <argument
+            android:name="docSize"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="docTime"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/docListFragment"

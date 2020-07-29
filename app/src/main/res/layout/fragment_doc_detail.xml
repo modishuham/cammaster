@@ -23,10 +23,31 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="This is example name.jpg" />
 
+    <TextView
+        android:id="@+id/tv_doc_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/ubuntu_light"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="@+id/tv_doc_name_detail"
+        app:layout_constraintTop_toBottomOf="@+id/tv_doc_name_detail" />
+
+    <TextView
+        android:id="@+id/tv_doc_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/ubuntu_light"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_doc_name_detail" />
+
     <Button
         android:id="@+id/btn_share"
         android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circle_background"
@@ -42,7 +63,7 @@
     <Button
         android:id="@+id/btn_delete"
         android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/circle_background"
         android:drawableStart="@drawable/ic_delete"
@@ -57,8 +78,8 @@
 
     <com.ortiz.touchview.TouchImageView
         android:id="@+id/iv_doc_detail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/gl_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

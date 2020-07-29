@@ -6,5 +6,7 @@ data class DOC(
     val docName: String,
     val docType: String,
     val docImage: Bitmap?,
-    val docPath: String
+    val docPath: String,
+    val docSize: String,
+    val docTime: String
 )

@@ -88,7 +88,9 @@ class DocListFragment : Fragment() {
                                 file.name,
                                 file.extension,
                                 BitmapUtils.getThumbnail(file.path),
-                                file.path
+                                file.path,
+                                file.length().toString(),
+                                file.lastModified().toString()
                             )
                             docList.add(doc)
                         } catch (e: Exception) {

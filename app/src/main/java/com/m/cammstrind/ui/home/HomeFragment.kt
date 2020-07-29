@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_pdfListFragment, bundle)
         }
 
-        iv_ocr.setOnClickListener {
+        btn_ocr.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_ocrFragment)
         }
     }

@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.pdfviewer.PDFView
 import com.m.cammstrind.R
 import com.m.cammstrind.utils.AppUtils
+import kotlinx.android.synthetic.main.fragment_doc_detail.*
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
@@ -73,10 +72,18 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
         private val btnShare = itemView.findViewById<ImageView>(R.id.btn_pdf_share)
         private val btnDelete = itemView.findViewById<ImageView>(R.id.btn_pdf_delete)
         private val ivPdf = itemView.findViewById<ImageView>(R.id.iv_item_pdf)
+        private val pdfSize = itemView.findViewById<TextView>(R.id.tv_pdf_size)
 
         fun bind(pdf: File) {
             pdfName.text = pdf.name
-            pdfDate.text = getDateForDurationEvent(pdf.lastModified()).toString()
+            pdfDate.text = AppUtils.getDateForDurationEvent(pdf.lastModified()).toString()
+            var size = ((pdf.length() / 1024) / 1024).toFloat()
+            if (size < 1) {
+                size = (pdf.length() / 1024).toFloat()
+                pdfSize.text = "$size KB"
+            } else {
+                pdfSize.text = "$size MB"
+            }
 
             if (selectedFilesList.contains(pdf)) {
                 ivPdf.setImageDrawable(activity?.resources?.getDrawable(R.drawable.ic_select, null))
@@ -154,17 +161,6 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
                     notifyItemRemoved(adapterPosition)
                     notifyItemRangeChanged(adapterPosition, pdfList.size)
                 }
-            }
-        }
-
-        private fun getDateForDurationEvent(timeStamp: Long): String? {
-            return try {
-                val sdf =
-                    SimpleDateFormat("dd/MM/yyyy hh.mm aa")
-                val netDate = Date(timeStamp)
-                sdf.format(netDate)
-            } catch (ex: Exception) {
-                ""
             }
         }
 

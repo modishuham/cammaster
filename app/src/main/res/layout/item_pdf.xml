@@ -24,7 +24,7 @@
         style="@style/ItemText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -38,28 +38,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/tv_pdf_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_pdf_name"
         tools:text="09/06" />
+
+    <TextView
+        android:id="@+id/tv_pdf_size"
+        style="@style/ItemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/iv_item_pdf"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pdf_date"
+        tools:text="1.0 MB" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_pdf_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
         android:src="@drawable/ic_delete"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pdf_date" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_pdf_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
         android:src="@drawable/ic_share"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_pdf_delete" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_pdf_delete"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pdf_date" />
 </androidx.constraintlayout.widget.ConstraintLayout>
