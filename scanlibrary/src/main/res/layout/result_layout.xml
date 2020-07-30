@@ -142,6 +142,16 @@
         android:orientation="horizontal"
         android:padding="@dimen/bottom_bar_padding" />
 
+    <TextView
+        android:id="@+id/tv_hint_edit"
+        android:textColor="@color/colorWhite"
+        android:layout_below="@id/backButton"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/for_better_results_use_brightness_or_contrast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -153,8 +163,8 @@
 
         <ImageView
             android:id="@+id/scannedImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/scanPadding" />
     </FrameLayout>

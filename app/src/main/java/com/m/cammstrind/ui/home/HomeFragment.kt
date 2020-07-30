@@ -1,12 +1,11 @@
 package com.m.cammstrind.ui.home
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +20,7 @@ import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
 import com.itextpdf.text.pdf.PdfWriter
+import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
@@ -58,6 +58,40 @@ class HomeFragment : Fragment() {
 
         btn_ocr.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_ocrFragment)
+        }
+
+        tv_menu_about.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_aboutFragment)
+        }
+
+        val appPackageName = "com.olacabs.customer"
+        tv_menu_rate_us.setOnClickListener {
+            try {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=$appPackageName")
+                    )
+                )
+            } catch (e: ActivityNotFoundException) {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                    )
+                )
+            }
+        }
+
+        tv_menu_share_app.setOnClickListener {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                "Hey check out my app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
+            )
+            sendIntent.type = "text/plain"
+            startActivity(sendIntent)
         }
     }
 

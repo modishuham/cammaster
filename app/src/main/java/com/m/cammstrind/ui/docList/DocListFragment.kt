@@ -18,6 +18,8 @@ import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_doc_list.*
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DocListFragment : Fragment() {
 
@@ -82,6 +84,7 @@ class DocListFragment : Fragment() {
                             name.endsWith(".png")
                 }
                 allFiles?.let {
+                    Arrays.sort(it)
                     for (file in allFiles.asList()) {
                         try {
                             val doc = DOC(

@@ -15,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.R
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PdfListFragment : Fragment() {
 
@@ -67,6 +69,7 @@ class PdfListFragment : Fragment() {
                     name.endsWith(".pdf")
                 }
                 allFiles?.let {
+                    Arrays.sort(it)
                     try {
                         pdfList.addAll(allFiles.asList())
                     } catch (e: Exception) {
