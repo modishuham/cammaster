@@ -10,4 +10,5 @@
     <color name="colorCardBack">#262035</color>
     <color name="colorRed">#FF5252</color>
     <color name="colorHighlight">#69F0AE</color>
+    <color name="colorHighlightGray">#A1A1A1</color>
 </resources>

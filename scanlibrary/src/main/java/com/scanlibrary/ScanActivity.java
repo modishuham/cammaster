@@ -133,12 +133,6 @@ public class ScanActivity extends FragmentActivity implements IScanner, Componen
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public Bitmap getMirrorBitmap(Bitmap bitmap) {
-        Matrix matrix = new Matrix();
-        matrix.setScale(-1, 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
     static {
         System.loadLibrary("opencv_java3");
         System.loadLibrary("Scanner");

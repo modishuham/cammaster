@@ -11,7 +11,9 @@
     <color name="colorBlack">#000000</color>
     <color name="colorPurple">#7C4DFF</color>
     <color name="colorAppBack">#121212</color>
+    <color name="colorEditActionBack">#202020</color>
     <color name="colorAccent">#280A50</color>
     <color name="colorAccentLight">#3D1472</color>
     <color name="colorPrimary">#3B3F48</color>
+    <color name="colorTransparent">#00000000</color>
 </resources>

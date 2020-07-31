@@ -191,7 +191,7 @@
         <TextView
             android:id="@+id/tv_menu_share_app"
             style="@style/MenuText"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/share_cam_master"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_menu_rate_us" />
@@ -199,7 +199,7 @@
         <TextView
             android:id="@+id/tv_menu_about"
             style="@style/MenuText"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/about"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_menu_share_app" />

@@ -20,6 +20,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_original"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Original"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
@@ -31,6 +33,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_magic"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
             android:text="Magic color"
             android:textAllCaps="false"
@@ -43,6 +47,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_grey"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
             android:text="Gray Mode"
             android:textAllCaps="false"
@@ -55,6 +61,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_black_white"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
             android:text="B and W"
             android:textAllCaps="false"
@@ -77,19 +85,23 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_rotate_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Rotate"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 
         <Button
-            android:id="@+id/mirror"
+            android:id="@+id/monochrome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_mirror"
+            android:drawableTop="@drawable/ic_monochrome"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Mirror"
+            android:text="MonoChrome"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 
@@ -100,6 +112,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_brightness"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
             android:text="Brightness"
             android:textAllCaps="false"
@@ -112,6 +126,8 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_contrast"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:singleLine="true"
             android:text="Contrast"
             android:textAllCaps="false"
@@ -144,13 +160,14 @@
 
     <TextView
         android:id="@+id/tv_hint_edit"
-        android:textColor="@color/colorWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/backButton"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:elevation="5dp"
         android:text="@string/for_better_results_use_brightness_or_contrast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:textColor="@color/blue" />
 
 
     <FrameLayout
@@ -183,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Brightness"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/blue" />
 
         <SeekBar
             android:id="@+id/seek_brightness"
@@ -209,7 +226,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Contrast"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/blue" />
 
         <SeekBar
             android:id="@+id/seek_sharpness"

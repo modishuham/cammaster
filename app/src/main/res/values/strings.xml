@@ -18,4 +18,7 @@
     <string name="please_press_and_hold_the_text_for_copy">Please press and hold the text for copy and share.</string>
     <string name="ocr_error_message">Image do not contain any text or image quality is not good (OCR scans only English language and latin characters)</string>
     <string name="version">version</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_conditions">Terms &amp; Conditions</string>
+    <string name="no_internet">No Internet Connected</string>
 </resources>

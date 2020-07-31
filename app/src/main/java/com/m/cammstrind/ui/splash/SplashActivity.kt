@@ -77,7 +77,7 @@ class SplashActivity : AppCompatActivity() {
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (shouldShowRequestPermissionRationale(CAMERA)) {
-                            showMessageOKCancel("You need to allow access to both the permissions",
+                            showMessageOKCancel("Both permissions are required to access this application. Please allow both permissions.",
                                 DialogInterface.OnClickListener { _, _ ->
                                     checkPermission()
                                 })

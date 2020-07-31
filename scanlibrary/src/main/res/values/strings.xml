@@ -16,5 +16,5 @@
     <string name="file_name">File Name</string>
     <string name="save_as_image">Save As Image</string>
     <string name="save_as_pdf">Save As Pdf</string>
-    <string name="for_better_results_use_brightness_or_contrast">For better results use brightness or contrast.</string>
+    <string name="for_better_results_use_brightness_or_contrast">For better results increase brightness or contrast.</string>
 </resources>

@@ -27,7 +27,11 @@
         android:id="@+id/aboutFragment"
         android:name="com.m.cammstrind.ui.about.AboutFragment"
         android:label="AboutFragment"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_privacyPolicyFragment"
+            app:destination="@id/privacyPolicyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/ocrFragment"
         android:name="com.m.cammstrind.ui.ocr.OcrFragment"
@@ -77,4 +81,14 @@
         android:name="com.m.cammstrind.ui.pdfList.PdfListFragment"
         android:label="PdfListFragment"
         tools:layout="@layout/fragment_pdf_list" />
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.m.cammstrind.ui.privacyPolicy.PrivacyPolicyFragment"
+        android:label="PrivacyPolicyFragment"
+        tools:layout="@layout/fragment_privacy_policy">
+        <argument
+            android:name="pageName"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 </navigation>

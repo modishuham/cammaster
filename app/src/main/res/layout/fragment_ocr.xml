@@ -32,7 +32,7 @@
         android:layout_marginBottom="50dp"
         android:fontFamily="@font/ubuntu_light"
         android:textColor="@color/colorWhite"
-        android:textColorHighlight="@color/colorHighlight"
+        android:textColorHighlight="@color/colorHighlightGray"
         android:textIsSelectable="true"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

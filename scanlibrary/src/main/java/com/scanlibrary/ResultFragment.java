@@ -32,11 +32,12 @@ public class ResultFragment extends Fragment {
     private ImageView scannedImageView;
     private Bitmap original;
     private Bitmap transformed;
+    private Bitmap transformedForMonoChrome;
     private Bitmap transformedBR;
     private Bitmap transformedOriginal;
     private Button brightnessButton, originalButton,
             magicColorButton, grayModeButton, bwButton,
-            rotate, mirror, doneButton, backButton, contrastButton;
+            rotate, monochrome, doneButton, backButton, contrastButton;
     private LinearLayout brightnessPopup;
     private LinearLayout contrastPopup;
     private SeekBar mBrightnessSeekBar, mSharpnessSeekBar;
@@ -44,7 +45,6 @@ public class ResultFragment extends Fragment {
     private Boolean isContrastPopupVisible = false;
     private static ProgressDialogFragment progressDialogFragment;
     private int rotationValue = 0;
-    private boolean mirrorValue = false;
     private Dialog dialog;
 
     @Override
@@ -62,7 +62,7 @@ public class ResultFragment extends Fragment {
         bwButton = view.findViewById(R.id.BWMode);
         rotate = view.findViewById(R.id.rotate);
         contrastButton = view.findViewById(R.id.contrastButton);
-        mirror = view.findViewById(R.id.mirror);
+        monochrome = view.findViewById(R.id.monochrome);
         doneButton = view.findViewById(R.id.doneButton);
         backButton = view.findViewById(R.id.backButton);
         brightnessButton = view.findViewById(R.id.brightnessButton);
@@ -72,7 +72,8 @@ public class ResultFragment extends Fragment {
         mSharpnessSeekBar = view.findViewById(R.id.seek_sharpness);
         initClickListener();
         Bitmap bitmap = getBitmap();
-        setScannedImage(bitmap);
+        //setScannedImage(bitmap);
+        magicColorButton.performClick();
     }
 
     private void initClickListener() {
@@ -82,7 +83,7 @@ public class ResultFragment extends Fragment {
         bwButton.setOnClickListener(new BWButtonClickListener());
         rotate.setOnClickListener(new RotateButtonClickListener());
         contrastButton.setOnClickListener(new ContrastButtonClickListener());
-        mirror.setOnClickListener(new MirrorButtonClickListener());
+        monochrome.setOnClickListener(new MonoChromeButtonClickListener());
         doneButton.setOnClickListener(new DoneButtonClickListener());
         backButton.setOnClickListener(new BackButtonClickListener());
         brightnessButton.setOnClickListener(new BrightnessButtonClickListener());
@@ -250,9 +251,8 @@ public class ResultFragment extends Fragment {
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
                         transformed = ((ScanActivity) requireContext()).getBWBitmap(transformedOriginal);
+                        setSelectedEffect(bwButton);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -326,6 +326,7 @@ public class ResultFragment extends Fragment {
                 contrastPopup.setVisibility(View.VISIBLE);
                 brightnessPopup.setVisibility(View.GONE);
                 isContrastPopupVisible = true;
+                isBrightnessPopupVisible = false;
             } else {
                 contrastPopup.setVisibility(View.GONE);
                 isContrastPopupVisible = false;
@@ -333,7 +334,7 @@ public class ResultFragment extends Fragment {
         }
     }
 
-    private class MirrorButtonClickListener implements View.OnClickListener {
+    private class MonoChromeButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
@@ -344,8 +345,16 @@ public class ResultFragment extends Fragment {
                         if (transformed == null) {
                             transformed = original;
                         }
-                        transformed = ((ScanActivity) requireContext()).getMirrorBitmap(transformed);
-                        mirrorValue = !mirrorValue;
+                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                        transformedForMonoChrome = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
+                        transformed = Bitmap.createBitmap(transformedForMonoChrome.getWidth(), transformedForMonoChrome.getHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(transformed);
+                        ColorMatrix ma = new ColorMatrix();
+                        ma.setSaturation(0);
+                        Paint paint = new Paint();
+                        paint.setColorFilter(new ColorMatrixColorFilter(ma));
+                        canvas.drawBitmap(transformedForMonoChrome, 0, 0, paint);
+                        setSelectedEffect(monochrome);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -380,9 +389,8 @@ public class ResultFragment extends Fragment {
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
                         transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
+                        setSelectedEffect(magicColorButton);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -414,9 +422,9 @@ public class ResultFragment extends Fragment {
             try {
                 showProgressDialog(getResources().getString(R.string.applying_filter));
                 rotationValue = 0;
-                mirrorValue = false;
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
+                setSelectedEffect(originalButton);
                 ResetBrightness();
                 dismissDialog();
             } catch (OutOfMemoryError e) {
@@ -435,9 +443,8 @@ public class ResultFragment extends Fragment {
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        if (mirrorValue)
-                            transformedOriginal = ((ScanActivity) requireContext()).getMirrorBitmap(transformedOriginal);
                         transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
+                        setSelectedEffect(grayModeButton);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -470,6 +477,7 @@ public class ResultFragment extends Fragment {
                 brightnessPopup.setVisibility(View.VISIBLE);
                 contrastPopup.setVisibility(View.GONE);
                 isBrightnessPopupVisible = true;
+                isContrastPopupVisible = false;
             } else {
                 brightnessPopup.setVisibility(View.GONE);
                 isBrightnessPopupVisible = false;
@@ -518,6 +526,40 @@ public class ResultFragment extends Fragment {
 
     protected synchronized void dismissDialog() {
         progressDialogFragment.dismissAllowingStateLoss();
+    }
+
+    private void setSelectedEffect(Button selectedButton) {
+        if (selectedButton.getId() == R.id.monochrome) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+        } else if (selectedButton.getId() == R.id.magicColor) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+        } else if (selectedButton.getId() == R.id.original) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+        } else if (selectedButton.getId() == R.id.grayMode) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+        } else if (selectedButton.getId() == R.id.BWMode) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+        }
     }
 
     @Override

@@ -64,20 +64,19 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_aboutFragment)
         }
 
-        val appPackageName = "com.olacabs.customer"
         tv_menu_rate_us.setOnClickListener {
             try {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=$appPackageName")
+                        Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)
                     )
                 )
             } catch (e: ActivityNotFoundException) {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                        Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
                     )
                 )
             }
@@ -88,7 +87,7 @@ class HomeFragment : Fragment() {
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
                 Intent.EXTRA_TEXT,
-                "Hey check out my app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
+                "Hey download and share CamMaster as free document scanner and OCR app. Check out CamMaster at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
