@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.m.cammstrind.R
 import com.m.cammstrind.response.DOC
+import com.m.cammstrind.utils.AppUtils
 
 class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
 
@@ -70,7 +71,7 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
 
         fun bind(doc: DOC) {
             docImage.setImageBitmap(doc.docImage)
-            docName.text = doc.docName
+            docName.text = AppUtils.removeFileExtension(doc.docName)
 
             if (selectedFilesList.contains(doc)) {
                 itemView.alpha = 0.3f

@@ -16,6 +16,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
@@ -31,6 +33,7 @@ class HomeFragment : Fragment() {
 
     private val requestCode = 99
     private var mView: View? = null
+    private var mInterstitialAd: InterstitialAd? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +48,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val adRequest = AdRequest.Builder().build()
+        addView_home.loadAd(adRequest)
+        mInterstitialAd = InterstitialAd(requireContext())
+        mInterstitialAd?.let {
+            it.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+            it.loadAd(AdRequest.Builder().build())
+        }
+
         btnCamera.setOnClickListener { openCamera() }
         btnGalary.setOnClickListener { openGalary() }
         btn_browse_images.setOnClickListener {
@@ -155,6 +167,10 @@ class HomeFragment : Fragment() {
                 document.open()
                 document.add(image)
                 document.close()
+            }
+            mInterstitialAd?.let {
+                if (it.isLoaded)
+                    it.show()
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()

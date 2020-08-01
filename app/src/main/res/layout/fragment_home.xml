@@ -127,6 +127,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_add_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_ocr">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/addView_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:adSize="LARGE_BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/btnCamera"
         style="?android:attr/borderlessButtonStyle"

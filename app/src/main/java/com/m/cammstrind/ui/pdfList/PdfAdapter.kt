@@ -75,7 +75,7 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
         private val pdfSize = itemView.findViewById<TextView>(R.id.tv_pdf_size)
 
         fun bind(pdf: File) {
-            pdfName.text = pdf.name
+            pdfName.text = AppUtils.removeFileExtension(pdf.name)
             pdfDate.text = AppUtils.getDateForDurationEvent(pdf.lastModified()).toString()
             var size = ((pdf.length() / 1024) / 1024).toFloat()
             if (size < 1) {

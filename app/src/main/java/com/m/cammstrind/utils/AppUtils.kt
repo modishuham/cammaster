@@ -23,6 +23,13 @@ object AppUtils {
         }
     }
 
+    fun removeFileExtension(fileName:String):String {
+        if (fileName.indexOf(".") > 0)
+             return fileName.substring(0, fileName.lastIndexOf("."))
+        else
+            return fileName
+    }
+
     fun getDateForDurationEvent(timeStamp: Long): String? {
         return try {
             val sdf =

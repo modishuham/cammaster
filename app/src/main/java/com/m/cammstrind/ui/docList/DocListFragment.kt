@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
 import com.m.cammstrind.response.DOC
 import com.m.cammstrind.utils.AppUtils
@@ -40,6 +41,9 @@ class DocListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val adRequest = AdRequest.Builder().build()
+        addView_docList.loadAd(adRequest)
 
         if (DocDeleteHandler.deletedDocPosition != -1 && docList.isNotEmpty()) {
             AppUtils.deleteDoc(

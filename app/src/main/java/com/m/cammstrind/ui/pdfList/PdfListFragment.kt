@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
@@ -37,6 +38,9 @@ class PdfListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val adRequest = AdRequest.Builder().build()
+        addView_pdfList.loadAd(adRequest)
 
         if (pdfList.isEmpty()) {
             requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
