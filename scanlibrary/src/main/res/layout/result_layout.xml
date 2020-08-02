@@ -41,6 +41,20 @@
             android:textColor="@android:color/white" />
 
         <Button
+            android:id="@+id/gammaEffect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/ic_gamma"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:singleLine="true"
+            android:text="Gamma"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
+
+        <Button
             android:id="@+id/grayMode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

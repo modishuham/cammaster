@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
@@ -37,7 +38,8 @@ public class ResultFragment extends Fragment {
     private Bitmap transformedOriginal;
     private Button brightnessButton, originalButton,
             magicColorButton, grayModeButton, bwButton,
-            rotate, monochrome, doneButton, backButton, contrastButton;
+            rotate, monochrome, doneButton, backButton, contrastButton,
+            gammaEffect;
     private LinearLayout brightnessPopup;
     private LinearLayout contrastPopup;
     private SeekBar mBrightnessSeekBar, mSharpnessSeekBar;
@@ -68,6 +70,7 @@ public class ResultFragment extends Fragment {
         brightnessButton = view.findViewById(R.id.brightnessButton);
         brightnessPopup = view.findViewById(R.id.brightnessPopup);
         contrastPopup = view.findViewById(R.id.contrastPopup);
+        gammaEffect = view.findViewById(R.id.gammaEffect);
         mBrightnessSeekBar = view.findViewById(R.id.seek_brightness);
         mSharpnessSeekBar = view.findViewById(R.id.seek_sharpness);
         initClickListener();
@@ -87,6 +90,7 @@ public class ResultFragment extends Fragment {
         doneButton.setOnClickListener(new DoneButtonClickListener());
         backButton.setOnClickListener(new BackButtonClickListener());
         brightnessButton.setOnClickListener(new BrightnessButtonClickListener());
+        gammaEffect.setOnClickListener(new GammaEffectClickListener());
         initSeekBarListener();
     }
 
@@ -470,6 +474,42 @@ public class ResultFragment extends Fragment {
         }
     }
 
+    private class GammaEffectClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(final View v) {
+            showProgressDialog(getResources().getString(R.string.applying_filter));
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                        transformed = doGamma(sharpen(transformedOriginal), 2.6, 2.6, 2.6);
+                        setSelectedEffect(gammaEffect);
+                        ResetBrightness();
+                    } catch (final OutOfMemoryError e) {
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                transformed = original;
+                                scannedImageView.setImageBitmap(original);
+                                e.printStackTrace();
+                                dismissDialog();
+                                onClick(v);
+                            }
+                        });
+                    }
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            scannedImageView.setImageBitmap(transformed);
+                            dismissDialog();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     private class BrightnessButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
@@ -528,6 +568,54 @@ public class ResultFragment extends Fragment {
         progressDialogFragment.dismissAllowingStateLoss();
     }
 
+    public static Bitmap doGamma(Bitmap src, double red, double green, double blue) {
+        Bitmap bmOut = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+        int width = src.getWidth();
+        int height = src.getHeight();
+        int A, R, G, B;
+        int pixel;
+        final int MAX_SIZE = 256;
+        final double MAX_VALUE_DBL = 255.0;
+        final int MAX_VALUE_INT = 255;
+        final double REVERSE = 1.0;
+
+        int[] gammaR = new int[MAX_SIZE];
+        int[] gammaG = new int[MAX_SIZE];
+        int[] gammaB = new int[MAX_SIZE];
+
+        for (int i = 0; i < MAX_SIZE; ++i) {
+            gammaR[i] = Math.min(MAX_VALUE_INT,
+                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / red)) + 0.5));
+            gammaG[i] = Math.min(MAX_VALUE_INT,
+                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / green)) + 0.5));
+            gammaB[i] = Math.min(MAX_VALUE_INT,
+                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / blue)) + 0.5));
+        }
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                pixel = src.getPixel(x, y);
+                A = Color.alpha(pixel);
+                R = gammaR[Color.red(pixel)];
+                G = gammaG[Color.green(pixel)];
+                B = gammaB[Color.blue(pixel)];
+                bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+            }
+        }
+        return bmOut;
+    }
+
+    public static Bitmap sharpen(Bitmap src) {
+        double[][] SharpConfig = new double[][]{
+                {0, -2, 0},
+                {-2, 11, -2},
+                {0, -2, 0}
+        };
+        ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
+        convMatrix.applyConfig(SharpConfig);
+        convMatrix.Factor = 3;
+        return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
+    }
+
     private void setSelectedEffect(Button selectedButton) {
         if (selectedButton.getId() == R.id.monochrome) {
             monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
@@ -535,30 +623,42 @@ public class ResultFragment extends Fragment {
             originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
         } else if (selectedButton.getId() == R.id.magicColor) {
             monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
             originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
         } else if (selectedButton.getId() == R.id.original) {
             monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
             grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
         } else if (selectedButton.getId() == R.id.grayMode) {
             monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
             bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
         } else if (selectedButton.getId() == R.id.BWMode) {
             monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
             bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+        } else if (selectedButton.getId() == R.id.gammaEffect) {
+            monochrome.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            magicColorButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            originalButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            grayModeButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            bwButton.setBackgroundColor(requireContext().getResources().getColor(R.color.colorTransparent));
+            gammaEffect.setBackgroundColor(requireContext().getResources().getColor(R.color.colorEditActionBack));
         }
     }
 
