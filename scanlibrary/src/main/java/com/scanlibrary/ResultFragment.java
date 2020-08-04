@@ -6,12 +6,17 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +30,9 @@ import android.widget.SeekBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+
 import java.io.IOException;
+import java.nio.IntBuffer;
 
 public class ResultFragment extends Fragment {
 
@@ -483,7 +490,7 @@ public class ResultFragment extends Fragment {
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = doGamma(sharpen(transformedOriginal), 2.6, 2.6, 2.6);
+                        transformed = doGamma(transformedOriginal);
                         setSelectedEffect(gammaEffect);
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
@@ -568,40 +575,125 @@ public class ResultFragment extends Fragment {
         progressDialogFragment.dismissAllowingStateLoss();
     }
 
-    public static Bitmap doGamma(Bitmap src, double red, double green, double blue) {
-        Bitmap bmOut = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
-        int width = src.getWidth();
-        int height = src.getHeight();
-        int A, R, G, B;
-        int pixel;
-        final int MAX_SIZE = 256;
-        final double MAX_VALUE_DBL = 255.0;
-        final int MAX_VALUE_INT = 255;
-        final double REVERSE = 1.0;
+    public Bitmap doGamma(Bitmap src) {
+        Bitmap bmGray = toGrayscale(src, 101 - 100); //101-i
+        Bitmap bmInvert = toInverted(bmGray, 100); //i
+        Bitmap bmBlur = toBlur(bmInvert, 100); //i
+        return colorDodgeBlend(bmBlur, bmGray, 100);
+    }
 
-        int[] gammaR = new int[MAX_SIZE];
-        int[] gammaG = new int[MAX_SIZE];
-        int[] gammaB = new int[MAX_SIZE];
+    private static Bitmap toGrayscale(Bitmap bmpOriginal, float saturation) {
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
 
-        for (int i = 0; i < MAX_SIZE; ++i) {
-            gammaR[i] = Math.min(MAX_VALUE_INT,
-                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / red)) + 0.5));
-            gammaG[i] = Math.min(MAX_VALUE_INT,
-                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / green)) + 0.5));
-            gammaB[i] = Math.min(MAX_VALUE_INT,
-                    (int) ((MAX_VALUE_DBL * Math.pow(i / MAX_VALUE_DBL, REVERSE / blue)) + 0.5));
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+
+        cm.setSaturation(saturation / 100);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
+
+    private static Bitmap toInverted(Bitmap src, float i) {
+        ColorMatrix colorMatrix_Inverted =
+                new ColorMatrix(new float[]{
+                        -1, 0, 0, 0, 255,
+                        0, -1, 0, 0, 255,
+                        0, 0, -1, 0, 255,
+                        0, 0, 0, i / 100, 0});
+
+        ColorFilter colorFilter = new ColorMatrixColorFilter(
+                colorMatrix_Inverted);
+
+        Bitmap bitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+        paint.setColorFilter(colorFilter);
+        canvas.drawBitmap(src, 0, 0, paint);
+
+        return bitmap;
+    }
+
+    private Bitmap toBlur(Bitmap input, float i) {
+        try {
+            RenderScript rsScript = RenderScript.create(requireContext());
+            Allocation alloc = Allocation.createFromBitmap(rsScript, input);
+
+            ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rsScript, Element.U8_4(rsScript));
+            blur.setRadius((i * 25) / 100);
+            blur.setInput(alloc);
+
+            Bitmap result = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.ARGB_8888);
+            Allocation outAlloc = Allocation.createFromBitmap(rsScript, result);
+
+            blur.forEach(outAlloc);
+            outAlloc.copyTo(result);
+
+            rsScript.destroy();
+            return result;
+        } catch (Exception e) {
+            // TODO: handle exception
+            return input;
         }
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                pixel = src.getPixel(x, y);
-                A = Color.alpha(pixel);
-                R = gammaR[Color.red(pixel)];
-                G = gammaG[Color.green(pixel)];
-                B = gammaB[Color.blue(pixel)];
-                bmOut.setPixel(x, y, Color.argb(A, R, G, B));
-            }
+    }
+
+    /**
+     * Blends 2 bitmaps to one and adds the color dodge blend mode to it.
+     */
+    public static Bitmap colorDodgeBlend(Bitmap source, Bitmap layer, float i) {
+        Bitmap base = source.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap blend = layer.copy(Bitmap.Config.ARGB_8888, false);
+
+        IntBuffer buffBase = IntBuffer.allocate(base.getWidth() * base.getHeight());
+        base.copyPixelsToBuffer(buffBase);
+        buffBase.rewind();
+
+        IntBuffer buffBlend = IntBuffer.allocate(blend.getWidth() * blend.getHeight());
+        blend.copyPixelsToBuffer(buffBlend);
+        buffBlend.rewind();
+
+        IntBuffer buffOut = IntBuffer.allocate(base.getWidth() * base.getHeight());
+        buffOut.rewind();
+
+        while (buffOut.position() < buffOut.limit()) {
+            int filterInt = buffBlend.get();
+            int srcInt = buffBase.get();
+
+            int redValueFilter = Color.red(filterInt);
+            int greenValueFilter = Color.green(filterInt);
+            int blueValueFilter = Color.blue(filterInt);
+
+            int redValueSrc = Color.red(srcInt);
+            int greenValueSrc = Color.green(srcInt);
+            int blueValueSrc = Color.blue(srcInt);
+
+            int redValueFinal = colordodge(redValueFilter, redValueSrc, i);
+            int greenValueFinal = colordodge(greenValueFilter, greenValueSrc, i);
+            int blueValueFinal = colordodge(blueValueFilter, blueValueSrc, i);
+
+            int pixel = Color.argb((int) (i * 255) / 100, redValueFinal, greenValueFinal, blueValueFinal);
+            buffOut.put(pixel);
         }
-        return bmOut;
+
+        buffOut.rewind();
+
+        base.copyPixelsFromBuffer(buffOut);
+        blend.recycle();
+
+        return base;
+    }
+
+    private static int colordodge(int in1, int in2, float i) {
+        float image = (float) in2;
+        float mask = (float) in1;
+        return ((int) ((image == 255) ? image : Math.min(255, (((long) mask << (int) (i * 8) / 100) / (255 - image)))));
     }
 
     public static Bitmap sharpen(Bitmap src) {
