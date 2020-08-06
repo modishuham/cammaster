@@ -2,7 +2,6 @@ package com.m.cammstrind.ui.home
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -67,15 +66,12 @@ class HomeFragment : Fragment() {
             val bundle = bundleOf("docType" to resources.getString(R.string.scanned_pdf))
             findNavController().navigate(R.id.action_homeFragment_to_pdfListFragment, bundle)
         }
-
         btn_ocr.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_ocrFragment)
         }
-
         tv_menu_about.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_aboutFragment)
         }
-
         tv_menu_rate_us.setOnClickListener {
             try {
                 startActivity(
@@ -93,7 +89,6 @@ class HomeFragment : Fragment() {
                 )
             }
         }
-
         tv_menu_share_app.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
@@ -127,6 +122,7 @@ class HomeFragment : Fragment() {
         imageType: String
     ) {
         try {
+            val number = (1..10).random()
             if (imageType == "IMG") {
                 val outStream: FileOutputStream
                 val mediaStorageDir: String =
@@ -135,18 +131,25 @@ class HomeFragment : Fragment() {
                 if (!mFolder.exists()) {
                     mFolder.mkdir()
                 }
-                val outFile = File(mFolder, "$imageName.jpg")
+                var outFile = File(mFolder, "$imageName.jpg")
+                if (outFile.exists()) {
+                    outFile = File(mFolder, "$imageName($number).jpg")
+                }
                 outStream = FileOutputStream(outFile)
                 bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                 outStream.flush()
                 outStream.close()
-                //showImageInGalary(outFile.toString())
             } else {
                 val mediaStorageDir: String =
                     "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
                 val mFolder = File(mediaStorageDir)
                 if (!mFolder.exists()) {
                     mFolder.mkdir()
+                }
+                var fileName = "$imageName.pdf"
+                val outFile = File(mFolder, fileName)
+                if (outFile.exists()) {
+                    fileName = "$imageName($number).pdf"
                 }
                 val stream = ByteArrayOutputStream()
                 bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -158,7 +161,7 @@ class HomeFragment : Fragment() {
                     document, FileOutputStream(
                         File(
                             mediaStorageDir,
-                            "$imageName.pdf"
+                            fileName
                         )
                     )
                 )
@@ -179,34 +182,13 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showImageInGalary(filePath: String) {
-        try {
-            ContentValues().apply {
-                put(MediaStore.Images.Media.TITLE, "image")
-                put(MediaStore.Images.Media.DISPLAY_NAME, "image")
-                put(MediaStore.Images.Media.MIME_TYPE, "image/*")
-                put("_data", filePath)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, filePath)
-                    put(MediaStore.MediaColumns.IS_PENDING, 1)
-                }
-                requireContext().contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    this
-                )
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
             val uri: Uri? = data?.extras!!.getParcelable(ScanConstants.SCANNED_RESULT)
             val imageType: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_TYPE) as String
             val imageName: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_NAME) as String
-            var bitmap: Bitmap? = null
+            val bitmap: Bitmap?
             try {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     val source = ImageDecoder.createSource(requireContext().contentResolver, uri!!)

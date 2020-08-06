@@ -81,9 +81,8 @@ public class ResultFragment extends Fragment {
         mBrightnessSeekBar = view.findViewById(R.id.seek_brightness);
         mSharpnessSeekBar = view.findViewById(R.id.seek_sharpness);
         initClickListener();
-        Bitmap bitmap = getBitmap();
-        //setScannedImage(bitmap);
-        magicColorButton.performClick();
+        getBitmap();
+        gammaEffect.performClick();
     }
 
     private void initClickListener() {
@@ -161,25 +160,19 @@ public class ResultFragment extends Fragment {
 
     }
 
-    private Bitmap getBitmap() {
+    private void getBitmap() {
         Uri uri = getUri();
         try {
             original = Utils.getBitmap(requireActivity(), uri);
             requireActivity().getContentResolver().delete(uri, null, null);
-            return original;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     private Uri getUri() {
         assert getArguments() != null;
         return getArguments().getParcelable(ScanConstants.SCANNED_RESULT);
-    }
-
-    public void setScannedImage(Bitmap scannedImage) {
-        scannedImageView.setImageBitmap(scannedImage);
     }
 
     private class DoneButtonClickListener implements View.OnClickListener {

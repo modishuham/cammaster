@@ -72,6 +72,7 @@
         android:text="@string/delete"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/btn_share"
         app:layout_constraintEnd_toStartOf="@+id/btn_share"
         app:layout_constraintTop_toTopOf="@+id/btn_share" />

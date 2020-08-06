@@ -23,9 +23,9 @@ object AppUtils {
         }
     }
 
-    fun removeFileExtension(fileName:String):String {
+    fun removeFileExtension(fileName: String): String {
         if (fileName.indexOf(".") > 0)
-             return fileName.substring(0, fileName.lastIndexOf("."))
+            return fileName.substring(0, fileName.lastIndexOf("."))
         else
             return fileName
     }
@@ -38,6 +38,16 @@ object AppUtils {
             sdf.format(netDate)
         } catch (ex: Exception) {
             ""
+        }
+    }
+
+    fun getFileSize(fileLength: Long): String {
+        var size = ((fileLength / 1024) / 1024).toFloat()
+        if (size < 1) {
+            size = (fileLength / 1024).toFloat()
+            return "$size KB"
+        } else {
+            return "$size MB"
         }
     }
 

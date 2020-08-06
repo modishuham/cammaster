@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.pdfviewer.PDFView
 import com.m.cammstrind.R
 import com.m.cammstrind.utils.AppUtils
-import kotlinx.android.synthetic.main.fragment_doc_detail.*
+import com.m.cammstrind.utils.DialogUtils
 import java.io.File
 import kotlin.collections.ArrayList
 
@@ -77,13 +77,7 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
         fun bind(pdf: File) {
             pdfName.text = AppUtils.removeFileExtension(pdf.name)
             pdfDate.text = AppUtils.getDateForDurationEvent(pdf.lastModified()).toString()
-            var size = ((pdf.length() / 1024) / 1024).toFloat()
-            if (size < 1) {
-                size = (pdf.length() / 1024).toFloat()
-                pdfSize.text = "$size KB"
-            } else {
-                pdfSize.text = "$size MB"
-            }
+            pdfSize.text = AppUtils.getFileSize(pdf.length())
 
             if (selectedFilesList.contains(pdf)) {
                 ivPdf.setImageDrawable(activity?.resources?.getDrawable(R.drawable.ic_select, null))
@@ -156,10 +150,17 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
 
             btnDelete.setOnClickListener {
                 if (!isMultiSelect) {
-                    AppUtils.deleteDoc(fragment?.requireContext()!!, pdf.name)
-                    pdfList.removeAt(adapterPosition)
-                    notifyItemRemoved(adapterPosition)
-                    notifyItemRangeChanged(adapterPosition, pdfList.size)
+                    DialogUtils.openAlertDialog(
+                        fragment?.requireContext()!!,
+                        "Are you sure want to delete ${pdf.name}?",
+                        false,
+                        View.OnClickListener {
+                            AppUtils.deleteDoc(fragment?.requireContext()!!, pdf.name)
+                            pdfList.removeAt(adapterPosition)
+                            notifyItemRemoved(adapterPosition)
+                            notifyItemRangeChanged(adapterPosition, pdfList.size)
+                            DialogUtils.dismissDialog()
+                        })
                 }
             }
         }

@@ -9,8 +9,8 @@ object BitmapUtils {
     fun getThumbnail(path: String): Bitmap {
         return ThumbnailUtils.extractThumbnail(
             BitmapFactory.decodeFile(path),
-            80,
-            80
+            100,
+            100
         )
     }
 }

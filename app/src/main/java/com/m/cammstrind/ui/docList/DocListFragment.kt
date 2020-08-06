@@ -15,8 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
 import com.m.cammstrind.response.DOC
-import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.BitmapUtils
+import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_list.*
 import java.io.File
 import java.util.*
@@ -44,16 +44,6 @@ class DocListFragment : Fragment() {
 
         val adRequest = AdRequest.Builder().build()
         addView_docList.loadAd(adRequest)
-
-        if (DocDeleteHandler.deletedDocPosition != -1 && docList.isNotEmpty()) {
-            AppUtils.deleteDoc(
-                requireContext(),
-                docList[DocDeleteHandler.deletedDocPosition].docPath
-            )
-            docList.removeAt(DocDeleteHandler.deletedDocPosition)
-            adapter.notifyItemRemoved(DocDeleteHandler.deletedDocPosition)
-            adapter.notifyItemRangeChanged(DocDeleteHandler.deletedDocPosition, docList.size)
-        }
 
         if (docList.isEmpty()) {
             requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
@@ -128,6 +118,23 @@ class DocListFragment : Fragment() {
         }).start()
     }
 
+    fun shareDoc(doc: DOC) {
+        try {
+            val intent = Intent(Intent.ACTION_SEND)
+            val uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.scanlibrary.provider1",
+                File(doc.docPath)
+            )
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.type = "image/*"
+            startActivity(Intent.createChooser(intent, "Share"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun shareMultipleDoc() {
         try {
             val uriList: ArrayList<Uri> = ArrayList()
@@ -150,5 +157,10 @@ class DocListFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogUtils.dismissDialog()
     }
 }

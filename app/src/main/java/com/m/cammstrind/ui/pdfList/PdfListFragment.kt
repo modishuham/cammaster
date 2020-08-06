@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
+import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
 import java.util.*
@@ -143,5 +144,10 @@ class PdfListFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogUtils.dismissDialog()
     }
 }
