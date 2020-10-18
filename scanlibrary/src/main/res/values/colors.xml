@@ -15,5 +15,7 @@
     <color name="colorAccent">#280A50</color>
     <color name="colorAccentLight">#3D1472</color>
     <color name="colorPrimary">#3B3F48</color>
+    <color name="colorOff">#B1B1B1</color>
+    <color name="colorGreen">#00C853</color>
     <color name="colorTransparent">#00000000</color>
 </resources>

@@ -31,6 +31,22 @@ object DialogUtils {
         dialog!!.show()
     }
 
+    fun openConvertToPdfDialog(
+        context: Context,
+        clickListener: View.OnClickListener
+    ) {
+        dialog = Dialog(context)
+        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.setCancelable(true)
+        dialog!!.setContentView(R.layout.dialog_convert_to_pdf)
+        dialog!!.findViewById<TextView>(R.id.btn_save_pdf).setOnClickListener(clickListener)
+        dialog!!.show()
+    }
+
+    fun getPdfName(): String {
+        return dialog!!.findViewById<TextView>(R.id.et_file_name).text.toString()
+    }
+
     fun dismissDialog() {
         dialog?.dismiss()
     }

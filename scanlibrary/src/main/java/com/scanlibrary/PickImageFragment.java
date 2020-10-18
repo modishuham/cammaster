@@ -179,7 +179,7 @@ public class PickImageFragment extends Fragment {
     }
 
     private Bitmap getBitmap(Uri selectedImg) throws IOException {
-        int inSampleSize = 2;
+        int inSampleSize = 1;
         Bitmap bitmap = null;
         try {
             if (Build.VERSION.SDK_INT < 28) {
@@ -187,10 +187,12 @@ public class PickImageFragment extends Fragment {
             } else {
                 bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().getContentResolver(), selectedImg));
             }
-            if (bitmap.getByteCount() > 30000000) {
+            if (bitmap.getByteCount() > 50000000) {
                 inSampleSize = 4;
-            } else if (bitmap.getByteCount() > 20000000) {
+            } else if (bitmap.getByteCount() > 30000000) {
                 inSampleSize = 3;
+            } else if (bitmap.getByteCount() > 20000000) {
+                inSampleSize = 2;
             }
         } catch (Exception e) {
             e.printStackTrace();

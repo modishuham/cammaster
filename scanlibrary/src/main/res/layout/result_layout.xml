@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAppBack"
@@ -22,9 +23,10 @@
             android:drawableTop="@drawable/ic_original"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Original"
+            android:text="@string/original"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/magicColor"
@@ -36,9 +38,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Magic color"
+            android:text="@string/magic_color"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/gammaEffect"
@@ -50,9 +53,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Perfect"
+            android:text="@string/perfect"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/grayMode"
@@ -64,9 +68,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Gray Mode"
+            android:text="@string/gray_mode"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/BWMode"
@@ -78,9 +83,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="B and W"
+            android:text="@string/b_and_w"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
     </LinearLayout>
 
@@ -101,9 +107,10 @@
             android:drawableTop="@drawable/ic_rotate_left"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Rotate"
+            android:text="@string/rotate"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/monochrome"
@@ -115,9 +122,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="MonoChrome"
+            android:text="@string/monochrome"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/brightnessButton"
@@ -129,9 +137,10 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Brightness"
+            android:text="@string/brightness"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/contrastButton"
@@ -143,23 +152,29 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:singleLine="true"
-            android:text="Contrast"
+            android:text="@string/contrast"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle" />
 
     </LinearLayout>
 
 
     <Button
         android:id="@+id/doneButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:color/transparent"
-        android:drawableEnd="@drawable/ic_select"
-        android:orientation="horizontal"
-        android:padding="@dimen/bottom_bar_padding" />
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/shape_save_button"
+        android:drawableStart="@drawable/ic_select"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textAllCaps="false"
+        android:text="@string/save"
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/backButton"
@@ -180,9 +195,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:elevation="5dp"
-        android:visibility="gone"
         android:text="@string/for_better_results_use_brightness_or_contrast"
-        android:textColor="@color/blue" />
+        android:textColor="@color/blue"
+        android:visibility="gone" />
 
 
     <FrameLayout
@@ -191,14 +206,15 @@
         android:layout_above="@id/topBar2"
         android:layout_below="@id/doneButton"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/scanPadding">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp">
 
         <ImageView
             android:id="@+id/scannedImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/scanPadding" />
+            android:contentDescription="@string/image" />
     </FrameLayout>
 
     <LinearLayout
@@ -206,23 +222,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/topBar2"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_filter_back"
         android:orientation="vertical"
-        android:padding="20dp"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Brightness"
-            android:textColor="@color/blue" />
+            android:text="@string/brightness"
+            android:textColor="@color/colorWhite" />
 
         <SeekBar
             android:id="@+id/seek_brightness"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progressBackgroundTint="@color/blue"
-            android:progressTint="@color/colorWhite"
+            android:layout_marginBottom="20dp"
+            android:progressBackgroundTint="@color/colorOff"
+            android:progressTint="@color/colorPurple"
+            android:thumb="@drawable/shape_circle_thumb"
             android:thumbTint="@color/colorPurple" />
 
     </LinearLayout>
@@ -232,24 +251,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/topBar2"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_filter_back"
         android:orientation="vertical"
-        android:padding="20dp"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Contrast"
-            android:textColor="@color/blue" />
+            android:text="@string/contrast"
+            android:textColor="@color/colorWhite" />
 
         <SeekBar
             android:id="@+id/seek_sharpness"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:max="5"
-            android:progressBackgroundTint="@color/blue"
-            android:progressTint="@color/colorWhite"
+            android:progressBackgroundTint="@color/colorOff"
+            android:progressTint="@color/colorPurple"
+            android:thumb="@drawable/shape_circle_thumb"
             android:thumbTint="@color/colorPurple" />
 
     </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -171,10 +172,6 @@ class HomeFragment : Fragment() {
                 document.add(image)
                 document.close()
             }
-            mInterstitialAd?.let {
-                if (it.isLoaded)
-                    it.show()
-            }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -196,7 +193,13 @@ class HomeFragment : Fragment() {
                 } else {
                     MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                 }
-                saveReceivedImage(bitmap, imageName, imageType)
+                mInterstitialAd?.let {
+                    if (it.isLoaded)
+                        it.show()
+                }
+                AsyncTask.execute {
+                    saveReceivedImage(bitmap, imageName.trim(), imageType)
+                }
                 if (uri != null) {
                     requireContext().contentResolver.delete(uri, null, null)
                 }

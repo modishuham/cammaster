@@ -197,7 +197,7 @@ public class ResultFragment extends Fragment {
                 saveBtnImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (docName.getText().toString().isEmpty()) {
+                        if (docName.getText().toString().trim().isEmpty()) {
                             docName.setError("Can't Empty");
                         } else {
                             Intent data = new Intent();
@@ -206,7 +206,7 @@ public class ResultFragment extends Fragment {
                             data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "IMG");
                             data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
                             requireActivity().setResult(Activity.RESULT_OK, data);
-                            original.recycle();
+                            //original.recycle();
                             System.gc();
                             requireActivity().finish();
                         }
@@ -215,7 +215,7 @@ public class ResultFragment extends Fragment {
                 saveBtnPdf.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (docName.getText().toString().isEmpty()) {
+                        if (docName.getText().toString().trim().isEmpty()) {
                             docName.setError("Can't Empty");
                         } else {
                             Intent data = new Intent();
@@ -224,7 +224,7 @@ public class ResultFragment extends Fragment {
                             data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "PDF");
                             data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
                             requireActivity().setResult(Activity.RESULT_OK, data);
-                            original.recycle();
+                            //original.recycle();
                             System.gc();
                             requireActivity().finish();
                         }
@@ -255,8 +255,14 @@ public class ResultFragment extends Fragment {
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = ((ScanActivity) requireContext()).getBWBitmap(transformedOriginal);
-                        setSelectedEffect(bwButton);
+                        transformed = doGamma(transformedOriginal);
+                        transformed = ((ScanActivity) requireContext()).getBWBitmap(transformed);
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSelectedEffect(bwButton);
+                            }
+                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -358,7 +364,12 @@ public class ResultFragment extends Fragment {
                         Paint paint = new Paint();
                         paint.setColorFilter(new ColorMatrixColorFilter(ma));
                         canvas.drawBitmap(transformedForMonoChrome, 0, 0, paint);
-                        setSelectedEffect(monochrome);
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSelectedEffect(monochrome);
+                            }
+                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -394,7 +405,12 @@ public class ResultFragment extends Fragment {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
-                        setSelectedEffect(magicColorButton);
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSelectedEffect(magicColorButton);
+                            }
+                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -428,7 +444,12 @@ public class ResultFragment extends Fragment {
                 rotationValue = 0;
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
-                setSelectedEffect(originalButton);
+                requireActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setSelectedEffect(originalButton);
+                    }
+                });
                 ResetBrightness();
                 dismissDialog();
             } catch (OutOfMemoryError e) {
@@ -448,7 +469,12 @@ public class ResultFragment extends Fragment {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
-                        setSelectedEffect(grayModeButton);
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSelectedEffect(grayModeButton);
+                            }
+                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -484,7 +510,12 @@ public class ResultFragment extends Fragment {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = doGamma(transformedOriginal);
-                        setSelectedEffect(gammaEffect);
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSelectedEffect(gammaEffect);
+                            }
+                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {

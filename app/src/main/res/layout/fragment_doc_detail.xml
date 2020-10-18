@@ -61,18 +61,19 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="100dp"
+        android:id="@+id/btn_convert_to_pdf"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/circle_background"
-        android:drawableStart="@drawable/ic_delete"
+        android:drawableStart="@drawable/ic_pdf"
+        android:drawablePadding="8dp"
         android:paddingStart="16dp"
-        android:paddingEnd="10dp"
-        android:text="@string/delete"
+        android:paddingEnd="16dp"
+        android:text="@string/convert_pdf"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/btn_share"
         app:layout_constraintEnd_toStartOf="@+id/btn_share"
         app:layout_constraintTop_toTopOf="@+id/btn_share" />

@@ -17,4 +17,15 @@
     <string name="save_as_image">Save As Image</string>
     <string name="save_as_pdf">Save As Pdf</string>
     <string name="for_better_results_use_brightness_or_contrast">For better results increase brightness or contrast.</string>
+    <string name="brightness">Brightness</string>
+    <string name="contrast">Contrast</string>
+    <string name="monochrome">MonoChrome</string>
+    <string name="rotate">Rotate</string>
+    <string name="b_and_w">B and W</string>
+    <string name="gray_mode">Gray Mode</string>
+    <string name="perfect">Perfect</string>
+    <string name="magic_color">Magic Color</string>
+    <string name="original">Original</string>
+    <string name="image">IMAGE</string>
+    <string name="save">Save</string>
 </resources>
