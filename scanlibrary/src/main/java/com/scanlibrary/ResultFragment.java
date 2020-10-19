@@ -250,6 +250,7 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
+            setSelectedEffect(bwButton);
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -257,12 +258,6 @@ public class ResultFragment extends Fragment {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = doGamma(transformedOriginal);
                         transformed = ((ScanActivity) requireContext()).getBWBitmap(transformed);
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setSelectedEffect(bwButton);
-                            }
-                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -348,6 +343,7 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
+            setSelectedEffect(monochrome);
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -364,12 +360,6 @@ public class ResultFragment extends Fragment {
                         Paint paint = new Paint();
                         paint.setColorFilter(new ColorMatrixColorFilter(ma));
                         canvas.drawBitmap(transformedForMonoChrome, 0, 0, paint);
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setSelectedEffect(monochrome);
-                            }
-                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -399,18 +389,13 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
+            setSelectedEffect(magicColorButton);
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setSelectedEffect(magicColorButton);
-                            }
-                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -439,17 +424,12 @@ public class ResultFragment extends Fragment {
     private class OriginalButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            setSelectedEffect(originalButton);
             try {
                 showProgressDialog(getResources().getString(R.string.applying_filter));
                 rotationValue = 0;
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setSelectedEffect(originalButton);
-                    }
-                });
                 ResetBrightness();
                 dismissDialog();
             } catch (OutOfMemoryError e) {
@@ -463,18 +443,13 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
+            setSelectedEffect(grayModeButton);
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setSelectedEffect(grayModeButton);
-                            }
-                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {
@@ -504,18 +479,13 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
+            setSelectedEffect(gammaEffect);
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
                         transformed = doGamma(transformedOriginal);
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setSelectedEffect(gammaEffect);
-                            }
-                        });
                         ResetBrightness();
                     } catch (final OutOfMemoryError e) {
                         requireActivity().runOnUiThread(new Runnable() {

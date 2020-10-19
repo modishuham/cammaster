@@ -9,11 +9,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.m.cammstrind.R
 import com.m.cammstrind.ui.home.HomeActivity
+import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
 
@@ -27,6 +29,10 @@ class SplashActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_splash)
+
+        iv_splash_logo.startAnimation(AnimationUtils.loadAnimation(this,R.anim.animation_scale_in))
+
+
         Handler().postDelayed({
             checkPermission()
         }, 2000)
