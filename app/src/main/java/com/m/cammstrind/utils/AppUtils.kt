@@ -6,6 +6,11 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkInfo
 import android.os.Build
+import android.util.Log
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import com.m.cammstrind.base.BaseActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,6 +80,33 @@ object AppUtils {
         }
     } catch (e: java.lang.Exception) {
 
+    }
+
+    fun verifyBioMetricExistence(activity: BaseActivity): Boolean {
+        val biometricManager = BiometricManager.from(activity)
+        val authenticationTypes = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
+        when (biometricManager.canAuthenticate(authenticationTypes)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                Log.d("Biometric", "App can authenticate using biometrics.")
+                return true
+            }
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                Log.d("Biometric", "No biometric features available on this device.")
+                return false
+            }
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                Log.d("Biometric", "Biometric features are currently unavailable.")
+                return false
+            }
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                Log.d(
+                    "Biometric",
+                    "The user hasn't associated any biometric credentials with their account."
+                )
+                return false
+            }
+            else -> return false
+        }
     }
 
 }

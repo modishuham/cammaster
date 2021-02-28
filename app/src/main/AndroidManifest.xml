@@ -15,8 +15,9 @@
         android:roundIcon="@drawable/cam_master_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.settings.SettingsActivity"/>
-        <activity android:name=".ui.AuthenticationActivity"/>
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.splash.SplashActivity"
             android:screenOrientation="portrait"

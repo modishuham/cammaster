@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.m.cammstrind.R
 import com.m.cammstrind.base.BaseFragment
-import kotlinx.android.synthetic.main.activity_authentication.*
+import kotlinx.android.synthetic.main.fragment_pdf_detail.*
 import java.io.File
 
 class PdfDetailFragment : BaseFragment() {
