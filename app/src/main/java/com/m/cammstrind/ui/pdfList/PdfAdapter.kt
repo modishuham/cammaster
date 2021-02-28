@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.github.pdfviewer.PDFView
 import com.m.cammstrind.R
 import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.DialogUtils
@@ -115,7 +116,11 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
 
             itemView.setOnClickListener {
                 if (!isMultiSelect) {
-                    PDFView.with(activity).setfilepath(pdf.path).start()
+                    val bundle = bundleOf(
+                        "pdfPath" to pdf.path
+                    )
+                    it.findNavController()
+                        .navigate(R.id.action_pdfListFragment_to_pdfDetailFragment, bundle)
                 } else {
                     if (!selectedFilesList.contains(pdf)) {
                         itemView.alpha = 0.7f

@@ -27,7 +27,7 @@
         android:id="@+id/aboutFragment"
         android:name="com.m.cammstrind.ui.about.AboutFragment"
         android:label="AboutFragment"
-        tools:layout="@layout/fragment_about" >
+        tools:layout="@layout/fragment_about">
         <action
             android:id="@+id/action_aboutFragment_to_privacyPolicyFragment"
             app:destination="@id/privacyPolicyFragment" />
@@ -80,7 +80,11 @@
         android:id="@+id/pdfListFragment"
         android:name="com.m.cammstrind.ui.pdfList.PdfListFragment"
         android:label="PdfListFragment"
-        tools:layout="@layout/fragment_pdf_list" />
+        tools:layout="@layout/fragment_pdf_list">
+        <action
+            android:id="@+id/action_pdfListFragment_to_pdfDetailFragment"
+            app:destination="@id/pdfDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
         android:name="com.m.cammstrind.ui.privacyPolicy.PrivacyPolicyFragment"
@@ -88,6 +92,16 @@
         tools:layout="@layout/fragment_privacy_policy">
         <argument
             android:name="pageName"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/pdfDetailFragment"
+        android:name="com.m.cammstrind.ui.pdfDetail.PdfDetailFragment"
+        android:label="PdfDetailFragment"
+        tools:layout="@layout/fragment_pdf_detail" >
+        <argument
+            android:name="pdfPath"
             android:defaultValue=""
             app:argType="string" />
     </fragment>

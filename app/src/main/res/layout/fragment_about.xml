@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:src="@drawable/ic_back"
+        android:src="@drawable/ic_back_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +29,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/ubuntu_medium"
         android:text="@string/cam_master"
-        android:textColor="#ffffff"
+        android:textColor="@color/colorText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/appCompatImageView"
         app:layout_constraintStart_toStartOf="@+id/appCompatImageView"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorText"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_privacy_policy"
         app:layout_constraintEnd_toEndOf="parent"

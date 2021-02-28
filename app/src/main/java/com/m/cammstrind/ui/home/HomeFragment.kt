@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import com.itextpdf.text.Rectangle
 import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
+import com.m.cammstrind.ui.settings.SettingsActivity
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -34,6 +36,7 @@ class HomeFragment : Fragment() {
     private val requestCode = 99
     private var mView: View? = null
     private var mInterstitialAd: InterstitialAd? = null
+    private var isMenuOpen = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +61,7 @@ class HomeFragment : Fragment() {
         }
 
         btnCamera.setOnClickListener { openCamera() }
-        btnGalary.setOnClickListener { openGalary() }
+        btnFiles.setOnClickListener { openGalary() }
         btn_browse_images.setOnClickListener {
             val bundle = bundleOf("docType" to resources.getString(R.string.scanned_images))
             findNavController().navigate(R.id.action_homeFragment_to_docListFragment, bundle)
@@ -90,6 +93,9 @@ class HomeFragment : Fragment() {
                 )
             }
         }
+        tv_settings.setOnClickListener {
+            requireActivity().startActivity(Intent(requireContext(), SettingsActivity::class.java))
+        }
         tv_menu_share_app.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
@@ -100,6 +106,27 @@ class HomeFragment : Fragment() {
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
         }
+        iv_menu.setOnClickListener {
+            if (isMenuOpen) {
+                cl_menu.visibility = View.GONE
+                isMenuOpen = false
+            } else {
+                cl_menu.visibility = View.VISIBLE
+                isMenuOpen = true
+            }
+        }
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isMenuOpen) {
+                    cl_menu.visibility = View.GONE
+                    isMenuOpen = false
+                } else {
+                    requireActivity().finish()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun openCamera() {

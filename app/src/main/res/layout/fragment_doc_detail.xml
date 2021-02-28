@@ -15,7 +15,7 @@
         android:ellipsize="end"
         android:fontFamily="@font/ubuntu_light"
         android:maxLines="1"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorText"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/gl_top"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/ubuntu_light"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorText"
         app:layout_constraintStart_toStartOf="@+id/tv_doc_name_detail"
         app:layout_constraintTop_toBottomOf="@+id/tv_doc_name_detail" />
 
@@ -40,7 +40,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
         android:fontFamily="@font/ubuntu_light"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_doc_name_detail" />
 
@@ -50,7 +50,7 @@
         android:layout_height="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/circle_background"
+        android:background="@drawable/shape_circle_background"
         android:drawableStart="@drawable/ic_share"
         android:paddingStart="16dp"
         android:paddingEnd="10dp"
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginEnd="10dp"
-        android:background="@drawable/circle_background"
+        android:background="@drawable/shape_circle_background"
         android:drawableStart="@drawable/ic_pdf"
         android:drawablePadding="8dp"
         android:paddingStart="16dp"

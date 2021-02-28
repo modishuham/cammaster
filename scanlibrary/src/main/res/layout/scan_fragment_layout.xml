@@ -12,7 +12,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/circle_background"
+        android:background="@drawable/shape_circle_background"
         android:orientation="horizontal"
         android:padding="@dimen/bottom_bar_padding"
         android:text="@string/scan"

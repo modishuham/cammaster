@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    app:layoutDescription="@xml/motion_scene_home">
+    android:background="@color/colorPrimaryDark">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_logo"
@@ -29,28 +28,32 @@
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/shape_rect"
+        android:elevation="5dp"
         app:layout_constraintEnd_toStartOf="@id/btn_browse_pdf"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/iv_browse_images"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:elevation="5dp"
-            android:src="@drawable/ic_folder"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/folder" />
 
         <TextView
             android:id="@+id/tv_browse_images"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu_light"
+            android:fontFamily="@font/ubuntu_medium"
             android:gravity="center"
             android:text="@string/scanned_images"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorText"
             app:layout_constraintEnd_toEndOf="@+id/iv_browse_images"
             app:layout_constraintStart_toStartOf="@+id/iv_browse_images"
             app:layout_constraintTop_toBottomOf="@+id/iv_browse_images" />
@@ -61,29 +64,34 @@
         android:id="@+id/btn_browse_pdf"
         android:layout_width="0dp"
         android:layout_height="150dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_rect"
+        android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_browse_images"
         app:layout_constraintEnd_toStartOf="@+id/gl_end"
         app:layout_constraintStart_toEndOf="@+id/btn_browse_images"
         app:layout_constraintTop_toTopOf="@+id/btn_browse_images">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/iv_browse_pdf"
             android:layout_width="0dp"
             android:layout_height="120dp"
-            android:elevation="5dp"
-            android:src="@drawable/ic_folder"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/folder" />
 
         <TextView
             android:id="@+id/tv_browse_pdf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu_light"
+            android:fontFamily="@font/ubuntu_medium"
             android:gravity="center"
             android:text="@string/scanned_pdf"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorText"
             app:layout_constraintEnd_toEndOf="@+id/iv_browse_pdf"
             app:layout_constraintStart_toStartOf="@+id/iv_browse_pdf"
             app:layout_constraintTop_toBottomOf="@+id/iv_browse_pdf" />
@@ -95,7 +103,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/background_item"
+        android:background="@drawable/shape_rect"
         android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="@id/gl_end"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
@@ -118,7 +126,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/ubuntu_light"
             android:text="@string/text_recognition"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorText"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -145,52 +153,36 @@
             app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
     </RelativeLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnCamera"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/circle_background"
-        android:drawableStart="@drawable/ic_camera"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/shape_circle_background"
         android:elevation="5dp"
-        android:fontFamily="@font/ubuntu"
-        android:gravity="center"
-        android:maxLines="1"
-        android:paddingStart="40dp"
-        android:paddingEnd="40dp"
-        android:text="@string/camera"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/gl_med"
-        app:layout_constraintStart_toStartOf="@id/gl_start" />
+        android:padding="16dp"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/btnFiles"
+        app:layout_constraintEnd_toStartOf="@+id/btnFiles"
+        app:layout_constraintTop_toTopOf="@+id/btnFiles" />
 
-    <Button
-        android:id="@+id/btnGalary"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnFiles"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/circle_background"
-        android:drawableStart="@drawable/ic_original"
+        android:background="@drawable/shape_circle_background"
         android:elevation="5dp"
-        android:fontFamily="@font/ubuntu"
-        android:maxLines="1"
-        android:padding="10dp"
-        android:paddingStart="50dp"
-        android:paddingEnd="50dp"
-        android:text="@string/files"
-        android:textColor="@color/colorWhite"
+        android:padding="16dp"
+        android:src="@drawable/ic_original"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/gl_end"
-        app:layout_constraintStart_toStartOf="@id/gl_med" />
+        app:layout_constraintEnd_toEndOf="@id/gl_end" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_menu"
-        android:layout_width="220dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.9"
         android:background="@color/colorPrimary"
         android:clickable="true"
         android:elevation="11dp"
@@ -217,12 +209,20 @@
             app:layout_constraintTop_toBottomOf="@id/tv_menu_rate_us" />
 
         <TextView
+            android:id="@+id/tv_settings"
+            style="@style/MenuText"
+            android:layout_marginTop="10dp"
+            android:text="@string/settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_menu_share_app" />
+
+        <TextView
             android:id="@+id/tv_menu_about"
             style="@style/MenuText"
             android:layout_marginTop="10dp"
             android:text="@string/about"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_menu_share_app" />
+            app:layout_constraintTop_toBottomOf="@id/tv_settings" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -257,4 +257,4 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".5" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

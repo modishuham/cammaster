@@ -7,33 +7,40 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.m.cammstrind.R
+import com.m.cammstrind.base.BaseActivity
 import com.m.cammstrind.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     private val requestPermissionCode = 999
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
         setContentView(R.layout.activity_splash)
 
-        iv_splash_logo.startAnimation(AnimationUtils.loadAnimation(this,R.anim.animation_scale_in))
+        iv_splash_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.animation_scale_in))
 
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             checkPermission()
         }, 2000)
     }
