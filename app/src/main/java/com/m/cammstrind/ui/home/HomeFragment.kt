@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,7 +17,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
@@ -54,12 +54,9 @@ class HomeFragment : Fragment() {
 
         val adRequest = AdRequest.Builder().build()
         addView_home.loadAd(adRequest)
-        mInterstitialAd = InterstitialAd(requireContext())
-        mInterstitialAd?.let {
-            it.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-            it.loadAd(AdRequest.Builder().build())
-        }
-
+        InterstitialAd.load(requireContext(),
+            "ca-app-pub-3940256099942544/1033173712",
+            AdRequest.Builder().build(),interstitialAdLoadCallback)
         btnCamera.setOnClickListener { openCamera() }
         btnFiles.setOnClickListener { openGalary() }
         btn_browse_images.setOnClickListener {
@@ -159,9 +156,9 @@ class HomeFragment : Fragment() {
                 if (!mFolder.exists()) {
                     mFolder.mkdir()
                 }
-                var outFile = File(mFolder, "$imageName.jpg")
+                var outFile = File(mFolder, "$imageName.png")
                 if (outFile.exists()) {
-                    outFile = File(mFolder, "$imageName($number).jpg")
+                    outFile = File(mFolder, "$imageName($number).png")
                 }
                 outStream = FileOutputStream(outFile)
                 bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outStream)
@@ -206,6 +203,13 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private val interstitialAdLoadCallback = object :InterstitialAdLoadCallback(){
+        override fun onAdLoaded(add: InterstitialAd) {
+            super.onAdLoaded(add)
+            mInterstitialAd = add
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
@@ -220,13 +224,12 @@ class HomeFragment : Fragment() {
                 } else {
                     MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                 }
-                mInterstitialAd?.let {
-                    if (it.isLoaded)
-                        it.show()
+                if (mInterstitialAd != null) {
+                    mInterstitialAd!!.show(requireActivity())
                 }
-                AsyncTask.execute {
+                Thread(Runnable {
                     saveReceivedImage(bitmap, imageName.trim(), imageType)
-                }
+                }).start()
                 if (uri != null) {
                     requireContext().contentResolver.delete(uri, null, null)
                 }

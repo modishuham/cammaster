@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="320dp"
     android:layout_height="300dp"
     android:background="@color/colorPrimary"
     android:elevation="10dp">
@@ -34,8 +34,8 @@
         android:background="@drawable/shape_circle_background"
         android:drawableStart="@drawable/ic_original"
         android:drawablePadding="10dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
         android:text="@string/save_as_image"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />
@@ -50,8 +50,8 @@
         android:background="@drawable/shape_circle_background"
         android:drawableStart="@drawable/ic_pdf"
         android:drawablePadding="10dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
         android:text="@string/save_as_pdf"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />

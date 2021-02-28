@@ -159,7 +159,6 @@
 
     </LinearLayout>
 
-
     <Button
         android:id="@+id/doneButton"
         android:layout_width="wrap_content"
@@ -174,7 +173,8 @@
         android:paddingEnd="10dp"
         android:textAllCaps="false"
         android:text="@string/save"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorWhite"
+        tools:ignore="RelativeOverlap" />
 
     <Button
         android:id="@+id/backButton"

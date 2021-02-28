@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,9 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -28,10 +27,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PickImageFragment extends Fragment {
 
-    private View view;
     private Uri fileUri;
     private IScanner scanner;
 
@@ -46,16 +45,12 @@ public class PickImageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.pick_image_fragment, container, false);
+        View view = inflater.inflate(R.layout.pick_image_fragment, container, false);
         init();
         return view;
     }
 
     private void init() {
-        ImageButton cameraButton = view.findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(new CameraButtonClickListener());
-        ImageButton galleryButton = view.findViewById(R.id.selectButton);
-        galleryButton.setOnClickListener(new GalleryClickListener());
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
@@ -66,7 +61,7 @@ public class PickImageFragment extends Fragment {
     private void clearTempImages() {
         try {
             File tempFolder = new File(requireActivity().getExternalFilesDir(null), Environment.DIRECTORY_PICTURES);
-            for (File f : tempFolder.listFiles())
+            for (File f : Objects.requireNonNull(tempFolder.listFiles()))
                 f.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,21 +88,6 @@ public class PickImageFragment extends Fragment {
     private int getIntentPreference() {
         assert getArguments() != null;
         return getArguments().getInt(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
-    }
-
-
-    private class CameraButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            openCamera();
-        }
-    }
-
-    private class GalleryClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            openMediaContent();
-        }
     }
 
     public void openMediaContent() {
@@ -180,7 +160,7 @@ public class PickImageFragment extends Fragment {
 
     private Bitmap getBitmap(Uri selectedImg) throws IOException {
         int inSampleSize = 1;
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         try {
             if (Build.VERSION.SDK_INT < 28) {
                 bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImg);
@@ -201,6 +181,7 @@ public class PickImageFragment extends Fragment {
         options.inSampleSize = inSampleSize;
         AssetFileDescriptor fileDescriptor =
                 requireActivity().getContentResolver().openAssetFileDescriptor(selectedImg, "r");
+        assert fileDescriptor != null;
         Bitmap original
                 = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);

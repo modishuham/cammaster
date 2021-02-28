@@ -1,6 +1,5 @@
 package com.scanlibrary;
 
-import android.app.AlertDialog;
 import android.content.ComponentCallbacks2;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
