@@ -26,6 +26,7 @@
             android:text="@string/original"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -41,6 +42,7 @@
             android:text="@string/magic_color"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -56,6 +58,7 @@
             android:text="@string/perfect"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -71,6 +74,7 @@
             android:text="@string/gray_mode"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -86,6 +90,7 @@
             android:text="@string/b_and_w"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
@@ -110,6 +115,7 @@
             android:text="@string/rotate"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -125,6 +131,7 @@
             android:text="@string/monochrome"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -140,6 +147,7 @@
             android:text="@string/brightness"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -155,6 +163,7 @@
             android:text="@string/contrast"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="12sp"
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
@@ -171,9 +180,10 @@
         android:drawableStart="@drawable/ic_select"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:textAllCaps="false"
         android:text="@string/save"
+        android:textAllCaps="false"
         android:textColor="@color/colorWhite"
+        android:textSize="12sp"
         tools:ignore="RelativeOverlap" />
 
     <Button
