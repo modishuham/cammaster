@@ -134,11 +134,11 @@ public class PickImageFragment extends Fragment {
             try {
                 switch (requestCode) {
                     case ScanConstants.START_CAMERA_REQUEST_CODE:
-                        bitmap = getBitmap(fileUri);
+                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(),fileUri);
                         break;
 
                     case ScanConstants.PICKFILE_REQUEST_CODE:
-                        bitmap = getBitmap(data.getData());
+                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(),data.getData());
                         break;
                 }
             } catch (Exception e) {
@@ -158,71 +158,4 @@ public class PickImageFragment extends Fragment {
         scanner.onBitmapSelect(uri);
     }
 
-    private Bitmap getBitmap(Uri selectedImg) throws IOException {
-        int inSampleSize = 1;
-        Bitmap bitmap;
-        try {
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImg);
-            } else {
-                bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().getContentResolver(), selectedImg));
-            }
-            if (bitmap.getByteCount() > 50000000) {
-                inSampleSize = 4;
-            } else if (bitmap.getByteCount() > 30000000) {
-                inSampleSize = 3;
-            } else if (bitmap.getByteCount() > 20000000) {
-                inSampleSize = 2;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = inSampleSize;
-        AssetFileDescriptor fileDescriptor =
-                requireActivity().getContentResolver().openAssetFileDescriptor(selectedImg, "r");
-        assert fileDescriptor != null;
-        Bitmap original
-                = BitmapFactory.decodeFileDescriptor(
-                fileDescriptor.getFileDescriptor(), null, options);
-        return getUnRotatedBitmap(fileDescriptor, original);
-    }
-
-    private Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
-    private Bitmap getUnRotatedBitmap(AssetFileDescriptor fileDescriptor, Bitmap original) {
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                ExifInterface ei = new ExifInterface(fileDescriptor.getFileDescriptor());
-                int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_UNDEFINED);
-                Bitmap rotatedBitmap;
-                switch (orientation) {
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        rotatedBitmap = rotateImage(original, 90);
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        rotatedBitmap = rotateImage(original, 180);
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        rotatedBitmap = rotateImage(original, 270);
-                        break;
-                    case ExifInterface.ORIENTATION_NORMAL:
-                    default:
-                        rotatedBitmap = original;
-                }
-                return rotatedBitmap;
-            } else {
-                return original;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return original;
-        }
-    }
 }
