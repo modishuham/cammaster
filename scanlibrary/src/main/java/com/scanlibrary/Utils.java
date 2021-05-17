@@ -2,7 +2,9 @@ package com.scanlibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +24,15 @@ public class Utils {
     }
 
     public static Bitmap getBitmap(Context context, Uri uri) throws IOException {
-        return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        if (Build.VERSION.SDK_INT < 28) {
+            return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        } else {
+            return ImageDecoder.decodeBitmap(
+                    ImageDecoder.createSource(
+                            context.getContentResolver(),
+                            uri
+                    )
+            );
+        }
     }
 }

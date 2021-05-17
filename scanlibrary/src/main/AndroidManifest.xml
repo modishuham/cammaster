@@ -16,6 +16,11 @@
         android:label="@string/app_name"
         android:largeHeap="true">
         <activity
+            android:name=".CameraActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/cameraTheme" />
+        <activity
             android:name=".ScanActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"

@@ -1,14 +1,20 @@
 package com.scanlibrary;
 
+import android.app.Activity;
 import android.content.ComponentCallbacks2;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import java.io.IOException;
 
 public class ScanActivity extends FragmentActivity implements IScanner, ComponentCallbacks2 {
 
@@ -16,22 +22,79 @@ public class ScanActivity extends FragmentActivity implements IScanner, Componen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_layout);
-        init();
+        handleIntentPreference();
     }
 
-    private void init() {
-        PickImageFragment fragment = new PickImageFragment();
+    private void handleIntentPreference() {
+        int preference = getIntent().getIntExtra(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+        if (preference == ScanConstants.OPEN_CAMERA) {
+            openCameraX();
+        } else if (preference == ScanConstants.OPEN_MEDIA) {
+            openMediaContent();
+        }
+    }
+
+    private void openCameraX() {
+        startActivityForResult(new Intent(this, CameraActivity.class),
+                ScanConstants.START_CAMERA_REQUEST_CODE);
+    }
+
+    public void openMediaContent() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, ScanConstants.PICK_FILE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ScanConstants.START_CAMERA_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null || data.getExtras() == null) {
+                    Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String uriString = data.getExtras().getString(ScanConstants.SELECTED_CAMERA_BITMAP);
+                ScanFragment fragment = new ScanFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(ScanConstants.SELECTED_BITMAP, Uri.parse(uriString));
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.content, fragment);
+                fragmentTransaction.addToBackStack(ScanFragment.class.toString());
+                fragmentTransaction.commit();
+            } else {
+                finish();
+            }
+        }
+        if (requestCode == ScanConstants.PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            try {
+                if (data == null || data.getData() == null) {
+                    Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Bitmap bitmap = BitmapUtils.INSTANCE.getBitmap(this, data.getData());
+                postImagePick(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void postImagePick(Bitmap bitmap) {
+        Uri uri = Utils.getUri(this, bitmap);
+        bitmap.recycle();
+        ScanFragment fragment = new ScanFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+        bundle.putParcelable(ScanConstants.SELECTED_BITMAP, uri);
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
+        fragmentTransaction.addToBackStack(ScanFragment.class.toString());
         fragmentTransaction.commit();
-    }
-
-    protected int getPreferenceContent() {
-        return getIntent().getIntExtra(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
     }
 
     @Override
