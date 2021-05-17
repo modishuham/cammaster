@@ -15,7 +15,7 @@ import java.io.IOException
 object BitmapUtils {
 
     @Throws(IOException::class)
-    public fun getBitmap(context: Context, selectedImg: Uri): Bitmap? {
+    fun getBitmap(context: Context, selectedImg: Uri): Bitmap? {
         var inSampleSize = 1
         val bitmap: Bitmap
         try {
@@ -79,12 +79,12 @@ object BitmapUtils {
                     ExifInterface.ORIENTATION_UNDEFINED
                 )
                 val rotatedBitmap: Bitmap = when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
-                        ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
-                        ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
-                        ExifInterface.ORIENTATION_NORMAL -> original
-                        else -> original
-                    }
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
+                    ExifInterface.ORIENTATION_NORMAL -> original
+                    else -> original
+                }
                 rotatedBitmap
             } else {
                 original

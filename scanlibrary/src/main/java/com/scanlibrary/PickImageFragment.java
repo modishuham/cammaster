@@ -71,10 +71,16 @@ public class PickImageFragment extends Fragment {
     private void handleIntentPreference() {
         int preference = getIntentPreference();
         if (preference == ScanConstants.OPEN_CAMERA) {
-            openCamera();
+            //openCamera();
+            openCameraX();
         } else if (preference == ScanConstants.OPEN_MEDIA) {
             openMediaContent();
         }
+    }
+
+    private void openCameraX() {
+        startActivityForResult(new Intent(requireContext(), CameraActivity.class),
+                ScanConstants.START_CAMERA_REQUEST_CODE);
     }
 
     private boolean isIntentPreferenceSet() {
@@ -134,11 +140,13 @@ public class PickImageFragment extends Fragment {
             try {
                 switch (requestCode) {
                     case ScanConstants.START_CAMERA_REQUEST_CODE:
-                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(),fileUri);
+                        //bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(),fileUri);
+                        String uri = data.getExtras().getString(ScanConstants.SELECTED_CAMERA_BITMAP);
+                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(), Uri.parse(uri));
                         break;
 
                     case ScanConstants.PICKFILE_REQUEST_CODE:
-                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(),data.getData());
+                        bitmap = BitmapUtils.INSTANCE.getBitmap(requireContext(), data.getData());
                         break;
                 }
             } catch (Exception e) {
