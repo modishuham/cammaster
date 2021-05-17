@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.scanlibrary.BitmapUtils.currentSelectedBitmap
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.nio.ByteBuffer
@@ -87,7 +88,11 @@ class CameraActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     Handler(Looper.getMainLooper()).postDelayed({
                         val bitmap = BitmapUtils.getBitmap(this@CameraActivity, savedUri)
-                        postImagePick(bitmap!!)
+                        currentSelectedBitmap = bitmap!!.copy(
+                            bitmap.config,
+                            true
+                        )
+                        postImagePick(bitmap)
                     }, 0)
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()

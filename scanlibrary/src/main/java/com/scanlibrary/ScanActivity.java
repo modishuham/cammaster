@@ -69,22 +69,28 @@ public class ScanActivity extends FragmentActivity implements IScanner, Componen
                 finish();
             }
         }
-        if (requestCode == ScanConstants.PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            try {
-                if (data == null || data.getData() == null) {
-                    Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
-                    return;
+        if (requestCode == ScanConstants.PICK_FILE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    if (data == null || data.getData() == null) {
+                        Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    Bitmap bitmap = BitmapUtils.INSTANCE.getBitmap(this, data.getData());
+                    postImagePick(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                Bitmap bitmap = BitmapUtils.INSTANCE.getBitmap(this, data.getData());
-                postImagePick(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                finish();
             }
         }
     }
 
     private void postImagePick(Bitmap bitmap) {
         Uri uri = Utils.getUri(this, bitmap);
+        BitmapUtils.INSTANCE.setCurrentSelectedBitmap(bitmap.copy(bitmap.getConfig(),
+                true));
         bitmap.recycle();
         ScanFragment fragment = new ScanFragment();
         Bundle bundle = new Bundle();
@@ -204,5 +210,14 @@ public class ScanActivity extends FragmentActivity implements IScanner, Componen
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (BitmapUtils.INSTANCE.getCurrentSelectedBitmap() != null) {
+            BitmapUtils.INSTANCE.getCurrentSelectedBitmap().recycle();
+            BitmapUtils.INSTANCE.setCurrentSelectedBitmap(null);
+        }
     }
 }

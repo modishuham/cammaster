@@ -162,12 +162,8 @@ public class ResultFragment extends Fragment {
 
     private void getBitmap() {
         Uri uri = getUri();
-        try {
-            original = Utils.getBitmap(requireActivity(), uri);
-            requireActivity().getContentResolver().delete(uri, null, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        original = Utils.getBitmap(requireActivity(), uri);
+        requireActivity().getContentResolver().delete(uri, null, null);
     }
 
     private Uri getUri() {

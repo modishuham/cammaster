@@ -76,14 +76,9 @@ public class ScanFragment extends Fragment {
 
     private Bitmap getBitmap() {
         Uri uri = getUri();
-        try {
-            Bitmap bitmap = Utils.getBitmap(requireActivity(), uri);
-            requireActivity().getContentResolver().delete(uri, null, null);
-            return bitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Bitmap bitmap = Utils.getBitmap(requireActivity(), uri);
+        requireActivity().getContentResolver().delete(uri, null, null);
+        return bitmap;
     }
 
     private Uri getUri() {
@@ -217,6 +212,8 @@ public class ScanFragment extends Fragment {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            BitmapUtils.INSTANCE.setCurrentSelectedBitmap(bitmap.copy(bitmap.getConfig(),
+                    true));
             bitmap.recycle();
             dismissDialog();
         }

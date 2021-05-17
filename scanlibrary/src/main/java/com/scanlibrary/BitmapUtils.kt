@@ -17,9 +17,11 @@ import java.io.File
 import java.io.IOException
 
 object BitmapUtils {
-    
+
+    var currentSelectedBitmap: Bitmap? = null
+
     @Throws(IOException::class)
-    fun getBitmap(activity:Activity,selectedImg: Uri): Bitmap? {
+    fun getBitmap(activity: Activity, selectedImg: Uri): Bitmap? {
         var inSampleSize = 1
         val bitmap: Bitmap
         try {
@@ -79,12 +81,12 @@ object BitmapUtils {
                     ExifInterface.ORIENTATION_UNDEFINED
                 )
                 val rotatedBitmap: Bitmap = when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
-                        ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
-                        ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
-                        ExifInterface.ORIENTATION_NORMAL -> original
-                        else -> original
-                    }
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
+                    ExifInterface.ORIENTATION_NORMAL -> original
+                    else -> original
+                }
                 rotatedBitmap
             } else {
                 original
@@ -95,7 +97,7 @@ object BitmapUtils {
         }
     }
 
-    fun getUri(context: Context, bitmap: Bitmap):Uri {
+    fun getUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val relativeLocation = Environment.DIRECTORY_PICTURES
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis().toString())
@@ -105,12 +107,8 @@ object BitmapUtils {
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
-
         val resolver = context.contentResolver
-        //val bitmap = picasso.load(expetedUrl).get()
-
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-
         try {
             uri?.let { uri ->
                 val stream = resolver.openOutputStream(uri)
@@ -134,5 +132,5 @@ object BitmapUtils {
         }
         return uri!!
     }
-    
+
 }

@@ -17,22 +17,39 @@ public class Utils {
     }
 
     public static Uri getUri(Context context, Bitmap bitmap) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
-        return Uri.parse(path);
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, bytes);
+            String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+            if (path == null || path.isEmpty()) {
+                return BitmapUtils.INSTANCE.getUriFromBitmap(context, bitmap);
+            }
+            return Uri.parse(path);
+        } catch (Exception ex) {
+            return BitmapUtils.INSTANCE.getUriFromBitmap(context, bitmap);
+        }
     }
 
-    public static Bitmap getBitmap(Context context, Uri uri) throws IOException {
-        if (Build.VERSION.SDK_INT < 28) {
-            return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-        } else {
-            return ImageDecoder.decodeBitmap(
+    public static Bitmap getBitmap(Context context, Uri uri) {
+        try {
+            Bitmap bitmap;
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                bitmap.getHeight();
+                return bitmap;
+            } else {
+            /*return ImageDecoder.decodeBitmap(
                     ImageDecoder.createSource(
                             context.getContentResolver(),
                             uri
                     )
-            );
+            );*/
+                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                bitmap.getHeight();
+                return bitmap;
+            }
+        } catch (Exception ex) {
+            return BitmapUtils.INSTANCE.getCurrentSelectedBitmap();
         }
     }
 }
