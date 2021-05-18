@@ -2,13 +2,11 @@ package com.scanlibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class Utils {
 

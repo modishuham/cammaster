@@ -99,7 +99,7 @@ class DocDetailFragment : Fragment() {
             val fileName = AppUtils.removeFileExtension(docName) + ".pdf"
             val outFile = File(mFolder, fileName)
             if (outFile.exists()) {
-                DialogUtils.openConvertToPdfDialog(requireContext(), View.OnClickListener {
+                DialogUtils.openConvertToPdfDialog(requireContext()) {
                     val newPdfName = DialogUtils.getPdfName().trim()
                     DialogUtils.dismissDialog()
                     if (newPdfName.isNotEmpty()) {
@@ -120,7 +120,7 @@ class DocDetailFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                })
+                }
             } else {
                 saveAsPDF(fileName, mediaStorageDir)
             }

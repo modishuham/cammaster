@@ -136,14 +136,14 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                     DialogUtils.openAlertDialog(
                         fragment?.requireContext()!!,
                         "Are you sure want to delete ${doc.docName}?",
-                        false,
-                        View.OnClickListener {
-                            AppUtils.deleteDoc(fragment?.requireContext()!!, doc.docName)
-                            docsList.removeAt(adapterPosition)
-                            notifyItemRemoved(adapterPosition)
-                            notifyItemRangeChanged(adapterPosition, docsList.size)
-                            DialogUtils.dismissDialog()
-                        })
+                        false
+                    ) {
+                        AppUtils.deleteDoc(fragment?.requireContext()!!, doc.docName)
+                        docsList.removeAt(adapterPosition)
+                        notifyItemRemoved(adapterPosition)
+                        notifyItemRangeChanged(adapterPosition, docsList.size)
+                        DialogUtils.dismissDialog()
+                    }
                 }
             }
 

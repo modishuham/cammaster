@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Window
-import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -90,15 +89,15 @@ class SplashActivity : BaseActivity() {
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (shouldShowRequestPermissionRationale(CAMERA)) {
-                            showMessageOKCancel("Both permissions are required to access this application. Please allow both permissions.",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    checkPermission()
-                                })
+                            showMessageOKCancel("Both permissions are required to access this application. Please allow both permissions."
+                            ) { _, _ ->
+                                checkPermission()
+                            }
                         } else {
-                            showMessageOKCancel("Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    finish()
-                                })
+                            showMessageOKCancel("Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission"
+                            ) { _, _ ->
+                                finish()
+                            }
                         }
                     }
                 }

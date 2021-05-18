@@ -227,9 +227,9 @@ class HomeFragment : Fragment() {
                 if (mInterstitialAd != null) {
                     mInterstitialAd!!.show(requireActivity())
                 }
-                Thread(Runnable {
+                Thread {
                     saveReceivedImage(bitmap, imageName.trim(), imageType)
-                }).start()
+                }.start()
                 if (uri != null) {
                     requireContext().contentResolver.delete(uri, null, null)
                 }

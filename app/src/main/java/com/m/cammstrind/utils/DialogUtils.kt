@@ -67,8 +67,4 @@ object DialogUtils {
         dialog?.dismiss()
     }
 
-    fun isDialogShowing(): Boolean {
-        return dialog?.isShowing ?: false
-    }
-
 }

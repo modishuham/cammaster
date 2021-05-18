@@ -65,7 +65,7 @@ class PdfListFragment : Fragment() {
     }
 
     private fun getScannedDocsList() {
-        Thread(Runnable {
+        Thread {
             val mediaStorageDir: String =
                 "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
             val mFolder = File(mediaStorageDir)
@@ -101,7 +101,7 @@ class PdfListFragment : Fragment() {
                         View.GONE
                 }
             }
-        }).start()
+        }.start()
     }
 
     fun sharePdf(pdf: File) {

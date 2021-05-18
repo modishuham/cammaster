@@ -29,10 +29,10 @@ object AppUtils {
     }
 
     fun removeFileExtension(fileName: String): String {
-        if (fileName.indexOf(".") > 0)
-            return fileName.substring(0, fileName.lastIndexOf("."))
+        return if (fileName.indexOf(".") > 0)
+            fileName.substring(0, fileName.lastIndexOf("."))
         else
-            return fileName
+            fileName
     }
 
     fun getDateForDurationEvent(timeStamp: Long): String? {

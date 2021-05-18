@@ -7,8 +7,9 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,10 +19,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ScanFragment extends Fragment {
     private Bitmap original;
 
     @Override
-    public void onAttach(Context activity) {
+    public void onAttach(@NonNull Context activity) {
         super.onAttach(activity);
         if (!(activity instanceof IScanner)) {
             throw new ClassCastException("Activity must implement IScanner");
@@ -63,13 +64,10 @@ public class ScanFragment extends Fragment {
         scanButton.setOnClickListener(new ScanButtonClickListener());
         sourceFrame = view.findViewById(R.id.sourceFrame);
         polygonView = view.findViewById(R.id.polygonView);
-        sourceFrame.post(new Runnable() {
-            @Override
-            public void run() {
-                original = getBitmap();
-                if (original != null) {
-                    setBitmap(original);
-                }
+        sourceFrame.post(() -> {
+            original = getBitmap();
+            if (original != null) {
+                setBitmap(original);
             }
         });
     }
@@ -146,7 +144,8 @@ public class ScanFragment extends Fragment {
         public void onClick(View v) {
             Map<Integer, PointF> points = polygonView.getPoints();
             if (isScanPointsValid(points)) {
-                new ScanAsyncTask(points).execute();
+                //new ScanAsyncTask(points).execute();
+                scanTask(points);
             } else {
                 showErrorDialog();
             }
@@ -187,7 +186,7 @@ public class ScanFragment extends Fragment {
         return ((ScanActivity) requireActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
-    private class ScanAsyncTask extends AsyncTask<Void, Void, Bitmap> {
+    /*private class ScanAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
         private Map<Integer, PointF> points;
 
@@ -217,6 +216,19 @@ public class ScanFragment extends Fragment {
             bitmap.recycle();
             dismissDialog();
         }
+    }*/
+
+    private void scanTask(Map<Integer, PointF> points) {
+        showProgressDialog(getString(R.string.scanning));
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Bitmap bitmap = getScannedBitmap(original, points);
+            Uri uri = Utils.getUri(requireActivity(), bitmap);
+            scanner.onScanFinish(uri);
+            BitmapUtils.INSTANCE.setCurrentSelectedBitmap(bitmap.copy(bitmap.getConfig(),
+                    true));
+            bitmap.recycle();
+            dismissDialog();
+        });
     }
 
     protected void showProgressDialog(String message) {

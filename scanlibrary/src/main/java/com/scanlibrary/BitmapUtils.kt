@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
-import java.io.File
 import java.io.IOException
 
 object BitmapUtils {

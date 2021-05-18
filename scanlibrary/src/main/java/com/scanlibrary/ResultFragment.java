@@ -11,8 +11,9 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -31,7 +32,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 
-import java.io.IOException;
 import java.nio.IntBuffer;
 
 public class ResultFragment extends Fragment {
@@ -190,40 +190,34 @@ public class ResultFragment extends Fragment {
                 Button saveBtnImg = dialog.findViewById(R.id.btn_save_img);
                 Button saveBtnPdf = dialog.findViewById(R.id.btn_save_pdf);
                 final EditText docName = dialog.findViewById(R.id.et_file_name);
-                saveBtnImg.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (docName.getText().toString().trim().isEmpty()) {
-                            docName.setError("Can't Empty");
-                        } else {
-                            Intent data = new Intent();
-                            Uri uri = Utils.getUri(requireActivity(), finalBitmap);
-                            data.putExtra(ScanConstants.SCANNED_RESULT, uri);
-                            data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "IMG");
-                            data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
-                            requireActivity().setResult(Activity.RESULT_OK, data);
-                            //original.recycle();
-                            System.gc();
-                            requireActivity().finish();
-                        }
+                saveBtnImg.setOnClickListener(v1 -> {
+                    if (docName.getText().toString().trim().isEmpty()) {
+                        docName.setError("Can't Empty");
+                    } else {
+                        Intent data = new Intent();
+                        Uri uri = Utils.getUri(requireActivity(), finalBitmap);
+                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                        data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "IMG");
+                        data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
+                        requireActivity().setResult(Activity.RESULT_OK, data);
+                        //original.recycle();
+                        System.gc();
+                        requireActivity().finish();
                     }
                 });
-                saveBtnPdf.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (docName.getText().toString().trim().isEmpty()) {
-                            docName.setError("Can't Empty");
-                        } else {
-                            Intent data = new Intent();
-                            Uri uri = Utils.getUri(requireActivity(), finalBitmap);
-                            data.putExtra(ScanConstants.SCANNED_RESULT, uri);
-                            data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "PDF");
-                            data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
-                            requireActivity().setResult(Activity.RESULT_OK, data);
-                            //original.recycle();
-                            System.gc();
-                            requireActivity().finish();
-                        }
+                saveBtnPdf.setOnClickListener(v12 -> {
+                    if (docName.getText().toString().trim().isEmpty()) {
+                        docName.setError("Can't Empty");
+                    } else {
+                        Intent data = new Intent();
+                        Uri uri = Utils.getUri(requireActivity(), finalBitmap);
+                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                        data.putExtra(ScanConstants.SELECTED_BITMAP_TYPE, "PDF");
+                        data.putExtra(ScanConstants.SELECTED_BITMAP_NAME, docName.getText().toString());
+                        requireActivity().setResult(Activity.RESULT_OK, data);
+                        //original.recycle();
+                        System.gc();
+                        requireActivity().finish();
                     }
                 });
                 dialog.show();
@@ -247,34 +241,25 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
             setSelectedEffect(bwButton);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = doGamma(transformedOriginal);
-                        transformed = ((ScanActivity) requireContext()).getBWBitmap(transformed);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
-                    }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                    transformed = doGamma(transformedOriginal);
+                    transformed = ((ScanActivity) requireContext()).getBWBitmap(transformed);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
@@ -283,39 +268,30 @@ public class ResultFragment extends Fragment {
         @Override
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (transformed == null) {
-                            transformed = original;
-                        }
-                        if (rotationValue > 360) {
-                            rotationValue = 0;
-                        }
-                        rotationValue = rotationValue + 90;
-                        transformed = ((ScanActivity) requireContext()).getRotateBitmap(transformed);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    if (transformed == null) {
+                        transformed = original;
                     }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+                    if (rotationValue > 360) {
+                        rotationValue = 0;
+                    }
+                    rotationValue = rotationValue + 90;
+                    transformed = ((ScanActivity) requireContext()).getRotateBitmap(transformed);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
@@ -340,43 +316,34 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
             setSelectedEffect(monochrome);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (transformed == null) {
-                            transformed = original;
-                        }
-                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformedForMonoChrome = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
-                        transformed = Bitmap.createBitmap(transformedForMonoChrome.getWidth(), transformedForMonoChrome.getHeight(), Bitmap.Config.ARGB_8888);
-                        Canvas canvas = new Canvas(transformed);
-                        ColorMatrix ma = new ColorMatrix();
-                        ma.setSaturation(0);
-                        Paint paint = new Paint();
-                        paint.setColorFilter(new ColorMatrixColorFilter(ma));
-                        canvas.drawBitmap(transformedForMonoChrome, 0, 0, paint);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    if (transformed == null) {
+                        transformed = original;
                     }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+                    transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                    transformedForMonoChrome = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
+                    transformed = Bitmap.createBitmap(transformedForMonoChrome.getWidth(), transformedForMonoChrome.getHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(transformed);
+                    ColorMatrix ma = new ColorMatrix();
+                    ma.setSaturation(0);
+                    Paint paint = new Paint();
+                    paint.setColorFilter(new ColorMatrixColorFilter(ma));
+                    canvas.drawBitmap(transformedForMonoChrome, 0, 0, paint);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
@@ -386,33 +353,24 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
             setSelectedEffect(magicColorButton);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
-                    }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                    transformed = ((ScanActivity) requireContext()).getMagicColorBitmap(transformedOriginal);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
@@ -440,33 +398,24 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
             setSelectedEffect(grayModeButton);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
-                    }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                    transformed = ((ScanActivity) requireContext()).getGrayBitmap(transformedOriginal);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
@@ -476,33 +425,24 @@ public class ResultFragment extends Fragment {
         public void onClick(final View v) {
             showProgressDialog(getResources().getString(R.string.applying_filter));
             setSelectedEffect(gammaEffect);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
-                        transformed = doGamma(transformedOriginal);
-                        ResetBrightness();
-                    } catch (final OutOfMemoryError e) {
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
-                                e.printStackTrace();
-                                dismissDialog();
-                                onClick(v);
-                            }
-                        });
-                    }
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
-                        }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    transformedOriginal = ((ScanActivity) requireContext()).getRotateBitmap(original, rotationValue);
+                    transformed = doGamma(transformedOriginal);
+                    ResetBrightness();
+                } catch (final OutOfMemoryError e) {
+                    requireActivity().runOnUiThread(() -> {
+                        transformed = original;
+                        scannedImageView.setImageBitmap(original);
+                        e.printStackTrace();
+                        dismissDialog();
+                        onClick(v);
                     });
                 }
+                requireActivity().runOnUiThread(() -> {
+                    scannedImageView.setImageBitmap(transformed);
+                    dismissDialog();
+                });
             });
         }
     }
