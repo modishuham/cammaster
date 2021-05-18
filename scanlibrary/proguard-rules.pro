@@ -15,3 +15,15 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+#-keep public class MyClass
+-keepattributes *Annotation*
+
+-keepattributes SourceFile,LineNumberTable
+
+-keep public class * extends java.lang.Exception
+
+-keep class com.google.firebase.crashlytics.** { *; }
+
+-dontwarn com.google.firebase.crashlytics.**
+

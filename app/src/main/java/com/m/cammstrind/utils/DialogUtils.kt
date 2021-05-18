@@ -38,7 +38,7 @@ object DialogUtils {
     ) {
         dialog = Dialog(context)
         dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setCancelable(false)
+        dialog!!.setCancelable(true)
         dialog!!.setContentView(R.layout.dialog_convert_to_pdf)
         dialog!!.findViewById<TextView>(R.id.btn_save_pdf).setOnClickListener(clickListener)
         dialog!!.show()

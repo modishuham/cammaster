@@ -21,3 +21,14 @@
 #-renamesourcefileattribute SourceFile
 
 -keepnames class androidx.navigation.fragment.NavHostFragment
+
+#-keep public class MyClass
+-keepattributes *Annotation*
+
+-keepattributes SourceFile,LineNumberTable
+
+-keep public class * extends java.lang.Exception
+
+-keep class com.google.firebase.crashlytics.** { *; }
+
+-dontwarn com.google.firebase.crashlytics.**
