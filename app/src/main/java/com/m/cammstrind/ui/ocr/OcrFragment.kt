@@ -3,8 +3,6 @@ package com.m.cammstrind.ui.ocr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,20 +11,24 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.m.cammstrind.R
+import com.m.cammstrind.utils.DialogUtils
+import com.scanlibrary.BitmapUtils.getBitmap
+import com.scanlibrary.CameraActivity
+import com.scanlibrary.ScanConstants
+import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.fragment_ocr.*
 import java.io.File
-import java.io.FileInputStream
+import java.io.IOException
 
 class OcrFragment : Fragment() {
 
-    private val ocrCameraRequest = 100
     private var filePath: String = ""
 
     override fun onCreateView(
@@ -39,23 +41,56 @@ class OcrFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        DialogUtils.openSelectImageDialog(
+            requireContext(),
+            cameraClickListener,
+            filesClickListener
+        )
+    }
+
+    private val cameraClickListener = View.OnClickListener {
+        openCameraX()
+        DialogUtils.dismissDialog()
+    }
+
+    private val filesClickListener = View.OnClickListener {
+        openFiles()
+        DialogUtils.dismissDialog()
+    }
+
+    private fun openFiles() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, ScanConstants.PICK_FILE_REQUEST_CODE)
+    }
+
+    private fun openDeviceCamera() {
         val ocrCameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val file = createImageFile()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val tempFileUri = FileProvider.getUriForFile(
                 requireActivity().applicationContext,
                 "com.scanlibrary.provider1",  // As defined in Manifest
-                file!!
+                file
             )
             ocrCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
         } else {
             val tempFileUri = Uri.fromFile(file)
             ocrCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
         }
-        startActivityForResult(ocrCameraIntent, ocrCameraRequest)
+        startActivityForResult(ocrCameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
     }
 
-    private fun createImageFile(): File? {
+    private fun openCameraX() {
+        startActivityForResult(
+            Intent(requireContext(), CameraActivity::class.java),
+            ScanConstants.START_CAMERA_REQUEST_CODE
+        )
+    }
+
+    private fun createImageFile(): File {
         clearTempImages()
         val file = File(
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -77,82 +112,100 @@ class OcrFragment : Fragment() {
         }
     }
 
-    private fun getBitmap(path: String): Bitmap? {
-        var bitmap: Bitmap? = null
-        try {
-            val f = File(path)
-            val options = BitmapFactory.Options()
-            options.inSampleSize = 2
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888
-            bitmap = BitmapFactory.decodeStream(FileInputStream(f), null, options)
-            bitmap?.let {
-                bitmap = getRotatedBitmap(it, FileInputStream(f))
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+    private fun setResultByDeviceCamera() {
+        getBitmap(requireActivity(), Uri.parse(filePath))?.let {
+            iv_ocr_image.setImageBitmap(it)
+            val image = InputImage.fromBitmap(it, 0)
+            val recognizer = TextRecognition.getClient()
+            recognizer.process(image)
+                .addOnSuccessListener { visionText ->
+                    if (visionText.text != "") {
+                        tv_ocr_result.text = visionText.text
+                        tv_ocr_hint.visibility = View.VISIBLE
+                        tv_ocr_error.visibility = View.GONE
+                    } else {
+                        tv_ocr_hint.visibility = View.GONE
+                        tv_ocr_error.visibility = View.VISIBLE
+                        tv_ocr_error.text =
+                            getString(R.string.ocr_error_message)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    tv_ocr_hint.visibility = View.GONE
+                    tv_ocr_error.visibility = View.VISIBLE
+                    tv_ocr_error.text = e.message
+                }
         }
-        return bitmap
-    }
-
-    private fun getRotatedBitmap(original: Bitmap, inputStream: FileInputStream): Bitmap {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val ei =
-                ExifInterface(inputStream)
-            val orientation: Int = ei.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
-            val rotatedBitmap: Bitmap
-            rotatedBitmap = when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
-                ExifInterface.ORIENTATION_NORMAL -> original
-                else -> original
-            }
-            return rotatedBitmap
-        } else {
-            return original
-        }
-    }
-
-    private fun rotateImage(source: Bitmap, angle: Float): Bitmap {
-        val matrix = Matrix()
-        matrix.postRotate(angle)
-        return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
-        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ocrCameraRequest && resultCode == Activity.RESULT_OK) {
-            getBitmap(filePath)?.let {
-                iv_ocr_image.setImageBitmap(it)
-                val image = InputImage.fromBitmap(it, 0)
-                val recognizer = TextRecognition.getClient()
-                recognizer.process(image)
-                    .addOnSuccessListener { visionText ->
-                        if (visionText.text != "") {
-                            tv_ocr_result.text = visionText.text
-                            tv_ocr_hint.visibility = View.VISIBLE
-                            tv_ocr_error.visibility = View.GONE
-                        } else {
-                            tv_ocr_hint.visibility = View.GONE
-                            tv_ocr_error.visibility = View.VISIBLE
-                            tv_ocr_error.text =
-                                getString(R.string.ocr_error_message)
-                        }
+        if (requestCode == ScanConstants.START_CAMERA_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null || data.extras == null) {
+                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT)
+                        .show()
+                    findNavController().popBackStack()
+                }
+                val uriString = data?.extras!!.getString(ScanConstants.SELECTED_CAMERA_BITMAP)
+                val bitmap = Utils.getBitmap(requireActivity(), Uri.parse(uriString))
+                convertImageToText(bitmap)
+            } else {
+                findNavController().popBackStack()
+            }
+        } else if (requestCode == ScanConstants.PICK_FILE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    if (data == null || data.data == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Something went wrong.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        findNavController().popBackStack()
                     }
-                    .addOnFailureListener { e ->
-                        tv_ocr_hint.visibility = View.GONE
-                        tv_ocr_error.visibility = View.VISIBLE
-                        tv_ocr_error.text = e.message
-                    }
+                    val bitmap = getBitmap(
+                        requireActivity(),
+                        data!!.data!!
+                    )
+                    convertImageToText(bitmap!!)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            } else {
+                findNavController().popBackStack()
             }
         } else {
             findNavController().popBackStack()
         }
+    }
+
+    private fun convertImageToText(bitmap: Bitmap) {
+        iv_ocr_image.setImageBitmap(bitmap)
+        val image = InputImage.fromBitmap(bitmap, 0)
+        val recognizer = TextRecognition.getClient()
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                if (visionText.text != "") {
+                    tv_ocr_result.text = visionText.text
+                    tv_ocr_hint.visibility = View.VISIBLE
+                    tv_ocr_error.visibility = View.GONE
+                } else {
+                    tv_ocr_hint.visibility = View.GONE
+                    tv_ocr_error.visibility = View.VISIBLE
+                    tv_ocr_error.text =
+                        getString(R.string.ocr_error_message)
+                }
+            }
+            .addOnFailureListener { e ->
+                tv_ocr_hint.visibility = View.GONE
+                tv_ocr_error.visibility = View.VISIBLE
+                tv_ocr_error.text = e.message
+            }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogUtils.dismissDialog()
     }
 }

@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.view.Window
+import android.widget.ImageView
 import android.widget.TextView
 import com.m.cammstrind.R
 
@@ -37,9 +38,24 @@ object DialogUtils {
     ) {
         dialog = Dialog(context)
         dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setCancelable(true)
+        dialog!!.setCancelable(false)
         dialog!!.setContentView(R.layout.dialog_convert_to_pdf)
         dialog!!.findViewById<TextView>(R.id.btn_save_pdf).setOnClickListener(clickListener)
+        dialog!!.show()
+    }
+
+    fun openSelectImageDialog(
+        context: Context,
+        clickListener1: View.OnClickListener,
+        clickListener2: View.OnClickListener
+    ) {
+        dialog = Dialog(context)
+        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.setCancelable(true)
+        dialog!!.setContentView(R.layout.dialog_select_image_from)
+        dialog!!.findViewById<ImageView>(R.id.iv_pick_from_camera)
+            .setOnClickListener(clickListener1)
+        dialog!!.findViewById<ImageView>(R.id.iv_pick_from_files).setOnClickListener(clickListener2)
         dialog!!.show()
     }
 
@@ -49,6 +65,10 @@ object DialogUtils {
 
     fun dismissDialog() {
         dialog?.dismiss()
+    }
+
+    fun isDialogShowing(): Boolean {
+        return dialog?.isShowing ?: false
     }
 
 }

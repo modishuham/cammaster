@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
             "ca-app-pub-3940256099942544/1033173712",
             AdRequest.Builder().build(),interstitialAdLoadCallback)
         btnCamera.setOnClickListener { openCamera() }
-        btnFiles.setOnClickListener { openGalary() }
+        btnFiles.setOnClickListener { openFiles() }
         btn_browse_images.setOnClickListener {
             val bundle = bundleOf("docType" to resources.getString(R.string.scanned_images))
             findNavController().navigate(R.id.action_homeFragment_to_docListFragment, bundle)
@@ -134,7 +134,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun openGalary() {
+    private fun openFiles() {
         val preference = ScanConstants.OPEN_MEDIA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
