@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.DialogUtils
 import java.io.File
@@ -119,6 +120,7 @@ class PdfAdapter : RecyclerView.Adapter<PdfAdapter.DocsViewHolder>() {
                     val bundle = bundleOf(
                         "pdfPath" to pdf.path
                     )
+                    AppAnalytics.trackPDFOpen(pdf.name)
                     it.findNavController()
                         .navigate(R.id.action_pdfListFragment_to_pdfDetailFragment, bundle)
                 } else {

@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.base.BaseActivity
 import com.m.cammstrind.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -24,6 +25,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppAnalytics.trackScreenLaunch("Splash")
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

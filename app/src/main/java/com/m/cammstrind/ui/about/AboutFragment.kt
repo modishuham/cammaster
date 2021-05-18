@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_about.*
 
@@ -25,6 +26,7 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppAnalytics.trackScreenLaunch("About")
         AppUtils.getNetworkState(requireContext())
         iv_about_back.setOnClickListener {
             findNavController().popBackStack()

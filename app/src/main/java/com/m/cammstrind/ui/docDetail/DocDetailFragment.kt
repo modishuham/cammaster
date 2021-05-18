@@ -15,6 +15,7 @@ import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
 import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_detail.*
@@ -40,6 +41,7 @@ class DocDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppAnalytics.trackScreenLaunch("DocDetail")
         docName = arguments?.getString("docName").toString()
         docPath = arguments?.getString("docPath").toString()
         docSize = arguments?.getString("docSize")

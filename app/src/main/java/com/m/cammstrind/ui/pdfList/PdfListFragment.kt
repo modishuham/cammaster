@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
 import java.io.File
@@ -39,7 +40,7 @@ class PdfListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        AppAnalytics.trackScreenLaunch("PdfList")
         val adRequest = AdRequest.Builder().build()
         addView_pdfList.loadAd(adRequest)
 

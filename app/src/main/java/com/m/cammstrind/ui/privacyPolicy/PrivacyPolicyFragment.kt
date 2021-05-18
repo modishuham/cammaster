@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import kotlinx.android.synthetic.main.fragment_privacy_policy.*
 
 class PrivacyPolicyFragment : Fragment() {
@@ -20,6 +21,7 @@ class PrivacyPolicyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppAnalytics.trackScreenLaunch("PrivacyPolicy")
         val pageName = arguments?.getString("pageName")
         if (pageName != null) {
             if (pageName == "terms") {

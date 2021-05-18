@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.response.DOC
 import com.m.cammstrind.utils.BitmapUtils
 import com.m.cammstrind.utils.DialogUtils
@@ -41,6 +42,7 @@ class DocListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppAnalytics.trackScreenLaunch("DocList")
 
         val adRequest = AdRequest.Builder().build()
         addView_docList.loadAd(adRequest)

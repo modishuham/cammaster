@@ -25,6 +25,7 @@ import com.itextpdf.text.Rectangle
 import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.ui.settings.SettingsActivity
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
@@ -51,12 +52,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        AppAnalytics.trackScreenLaunch("Home")
         val adRequest = AdRequest.Builder().build()
         addView_home.loadAd(adRequest)
-        InterstitialAd.load(requireContext(),
+        InterstitialAd.load(
+            requireContext(),
             "ca-app-pub-3940256099942544/1033173712",
-            AdRequest.Builder().build(),interstitialAdLoadCallback)
+            AdRequest.Builder().build(), interstitialAdLoadCallback
+        )
         btnCamera.setOnClickListener { openCamera() }
         btnFiles.setOnClickListener { openFiles() }
         btn_browse_images.setOnClickListener {
@@ -74,6 +77,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_aboutFragment)
         }
         tv_menu_rate_us.setOnClickListener {
+            AppAnalytics.trackRateUsClick()
             try {
                 startActivity(
                     Intent(
@@ -94,6 +98,7 @@ class HomeFragment : Fragment() {
             requireActivity().startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
         tv_menu_share_app.setOnClickListener {
+            AppAnalytics.trackShareClick()
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
@@ -127,6 +132,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun openCamera() {
+        AppAnalytics.trackCameraOpen()
         val preference = ScanConstants.OPEN_CAMERA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
@@ -135,6 +141,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun openFiles() {
+        AppAnalytics.trackFilesOpen()
         val preference = ScanConstants.OPEN_MEDIA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
@@ -203,7 +210,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val interstitialAdLoadCallback = object :InterstitialAdLoadCallback(){
+    private val interstitialAdLoadCallback = object : InterstitialAdLoadCallback() {
         override fun onAdLoaded(add: InterstitialAd) {
             super.onAdLoaded(add)
             mInterstitialAd = add

@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.response.DOC
 import com.m.cammstrind.utils.AppUtils
 import com.m.cammstrind.utils.DialogUtils
@@ -114,6 +115,7 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                         "docSize" to doc.docSize,
                         "docTime" to doc.docTime
                     )
+                    AppAnalytics.trackDocOpen(doc.docName)
                     it.findNavController()
                         .navigate(R.id.action_docListFragment_to_docDetailFragment, bundle)
                 } else {

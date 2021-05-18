@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.base.BaseActivity
 import com.m.cammstrind.storage.AppPref
 import com.m.cammstrind.storage.SharedPreferenceConstants
@@ -18,6 +19,7 @@ class SettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        AppAnalytics.trackScreenLaunch("Settings")
 
         isDarkModeEnabled = AppPref.getBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED)
         switch_dark_mode.isChecked = isDarkModeEnabled
@@ -31,6 +33,7 @@ class SettingsActivity : BaseActivity() {
                             .MODE_NIGHT_YES
                     )
                 AppPref.putBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED, true)
+                AppAnalytics.trackToggleNightMode(true)
             } else {
                 Log.e("CamMaster", "" + isOn)
                 AppCompatDelegate
@@ -39,6 +42,7 @@ class SettingsActivity : BaseActivity() {
                             .MODE_NIGHT_NO
                     )
                 AppPref.putBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED, false)
+                AppAnalytics.trackToggleNightMode(false)
             }
         }
 
@@ -60,9 +64,11 @@ class SettingsActivity : BaseActivity() {
             if (isOn) {
                 Log.e("CamMaster", "AppLock $isOn")
                 AppPref.putBoolean(SharedPreferenceConstants.APP_LOCK_ENABLED, true)
+                AppAnalytics.trackAppLock(true)
             } else {
                 Log.e("CamMaster", "AppLock $isOn")
                 AppPref.putBoolean(SharedPreferenceConstants.APP_LOCK_ENABLED, false)
+                AppAnalytics.trackAppLock(false)
             }
         }
     }

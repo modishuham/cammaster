@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_pdf_detail.*
 import java.io.File
@@ -24,6 +25,7 @@ class PdfDetailFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AppAnalytics.trackScreenLaunch("PdfDetail")
         pdfView.fromFile(File(arguments?.get("pdfPath").toString()))
             .defaultPage(0).load()
     }

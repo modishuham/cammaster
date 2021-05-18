@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.m.cammstrind.R
+import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.DialogUtils
 import com.scanlibrary.BitmapUtils.getBitmap
 import com.scanlibrary.CameraActivity
@@ -41,7 +42,7 @@ class OcrFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        AppAnalytics.trackScreenLaunch("OCR")
         DialogUtils.openSelectImageDialog(
             requireContext(),
             cameraClickListener,
