@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
@@ -19,6 +20,9 @@ import com.m.cammstrind.response.DOC
 import com.m.cammstrind.utils.BitmapUtils
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_doc_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -36,13 +40,13 @@ class DocListFragment : Fragment() {
     ): View? {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_doc_list, container, false)
+            AppAnalytics.trackScreenLaunch("DocList")
         }
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AppAnalytics.trackScreenLaunch("DocList")
 
         val adRequest = AdRequest.Builder().build()
         addView_docList.loadAd(adRequest)
@@ -69,7 +73,7 @@ class DocListFragment : Fragment() {
     }
 
     private fun getScannedDocsList() {
-        Thread {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val mediaStorageDir: String =
                 "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
             val mFolder = File(mediaStorageDir)
@@ -96,7 +100,7 @@ class DocListFragment : Fragment() {
                             e.printStackTrace()
                         }
                     }
-                    requireActivity().runOnUiThread {
+                    withContext(Dispatchers.Main) {
                         adapter.setDocsList(docList)
                         if (docList.isEmpty()) {
                             requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
@@ -110,14 +114,14 @@ class DocListFragment : Fragment() {
                     }
                 }
             } else {
-                requireActivity().runOnUiThread {
+                withContext(Dispatchers.Main) {
                     requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
                         View.VISIBLE
                     requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility =
                         View.GONE
                 }
             }
-        }.start()
+        }
     }
 
     fun shareDoc(doc: DOC) {

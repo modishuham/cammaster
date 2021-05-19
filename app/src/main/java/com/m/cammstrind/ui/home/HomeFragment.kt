@@ -46,13 +46,13 @@ class HomeFragment : Fragment() {
     ): View? {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_home, container, false)
+            AppAnalytics.trackScreenLaunch("Home")
         }
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AppAnalytics.trackScreenLaunch("Home")
         val adRequest = AdRequest.Builder().build()
         addView_home.loadAd(adRequest)
         InterstitialAd.load(
@@ -75,6 +75,9 @@ class HomeFragment : Fragment() {
         }
         tv_menu_about.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_aboutFragment)
+        }
+        iv_search.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
         tv_menu_rate_us.setOnClickListener {
             AppAnalytics.trackRateUsClick()

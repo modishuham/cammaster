@@ -6,11 +6,16 @@ import android.media.ThumbnailUtils
 
 object BitmapUtils {
 
-    fun getThumbnail(path: String): Bitmap {
-        return ThumbnailUtils.extractThumbnail(
-            BitmapFactory.decodeFile(path),
-            100,
-            100
-        )
+    fun getThumbnail(path: String): Bitmap? {
+        return try {
+            ThumbnailUtils.extractThumbnail(
+                BitmapFactory.decodeFile(path),
+                100,
+                100
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
+        }
     }
 }

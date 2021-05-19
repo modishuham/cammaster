@@ -11,12 +11,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.m.cammstrind.R
 import com.m.cammstrind.analytics.AppAnalytics
 import com.m.cammstrind.utils.DialogUtils
 import kotlinx.android.synthetic.main.fragment_pdf_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -34,13 +38,13 @@ class PdfListFragment : Fragment() {
     ): View? {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_pdf_list, container, false)
+            AppAnalytics.trackScreenLaunch("PdfList")
         }
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AppAnalytics.trackScreenLaunch("PdfList")
         val adRequest = AdRequest.Builder().build()
         addView_pdfList.loadAd(adRequest)
 
@@ -66,7 +70,7 @@ class PdfListFragment : Fragment() {
     }
 
     private fun getScannedDocsList() {
-        Thread {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val mediaStorageDir: String =
                 "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
             val mFolder = File(mediaStorageDir)
@@ -82,7 +86,7 @@ class PdfListFragment : Fragment() {
                         e.printStackTrace()
                     }
                 }
-                requireActivity().runOnUiThread {
+                withContext(Dispatchers.Main) {
                     adapter.setDocsList(pdfList)
                     if (pdfList.isEmpty()) {
                         requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
@@ -95,14 +99,14 @@ class PdfListFragment : Fragment() {
                         View.GONE
                 }
             } else {
-                requireActivity().runOnUiThread {
+                withContext(Dispatchers.Main) {
                     requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
                         View.VISIBLE
                     requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility =
                         View.GONE
                 }
             }
-        }.start()
+        }
     }
 
     fun sharePdf(pdf: File) {

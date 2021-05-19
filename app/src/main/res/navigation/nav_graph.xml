@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_homeFragment_to_pdfListFragment"
             app:destination="@id/pdfListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -99,10 +102,22 @@
         android:id="@+id/pdfDetailFragment"
         android:name="com.m.cammstrind.ui.pdfDetail.PdfDetailFragment"
         android:label="PdfDetailFragment"
-        tools:layout="@layout/fragment_pdf_detail" >
+        tools:layout="@layout/fragment_pdf_detail">
         <argument
             android:name="pdfPath"
             android:defaultValue=""
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.m.cammstrind.ui.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_pdfDetailFragment"
+            app:destination="@id/pdfDetailFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_docDetailFragment"
+            app:destination="@id/docDetailFragment" />
     </fragment>
 </navigation>
