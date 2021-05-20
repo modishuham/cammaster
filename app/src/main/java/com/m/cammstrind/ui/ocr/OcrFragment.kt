@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,10 +28,15 @@ import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.fragment_ocr.*
 import java.io.File
 import java.io.IOException
+import java.util.*
+
 
 class OcrFragment : Fragment() {
 
     private var filePath: String = ""
+    private var textToSpeech: TextToSpeech? = null
+    private var resultText: String = ""
+    private var isSpeaking: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +54,26 @@ class OcrFragment : Fragment() {
             cameraClickListener,
             filesClickListener
         )
+
+        textToSpeech = TextToSpeech(
+            requireContext()
+        ) { status ->
+            if (status != TextToSpeech.ERROR) {
+                textToSpeech?.language = Locale.UK
+            }
+        }
+
+        iv_speak.setOnClickListener {
+            if (resultText.isNotEmpty()) {
+                if (!isSpeaking) {
+                    isSpeaking = true
+                    textToSpeech?.speak(resultText, TextToSpeech.QUEUE_FLUSH, null, null)
+                } else {
+                    isSpeaking = false
+                    textToSpeech?.stop()
+                }
+            }
+        }
     }
 
     private val cameraClickListener = View.OnClickListener {
@@ -188,10 +214,13 @@ class OcrFragment : Fragment() {
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 if (visionText.text != "") {
+                    resultText = visionText.text
                     tv_ocr_result.text = visionText.text
                     tv_ocr_hint.visibility = View.VISIBLE
                     tv_ocr_error.visibility = View.GONE
+                    iv_speak.visibility = View.VISIBLE
                 } else {
+                    iv_speak.visibility = View.GONE
                     tv_ocr_hint.visibility = View.GONE
                     tv_ocr_error.visibility = View.VISIBLE
                     tv_ocr_error.text =
@@ -207,6 +236,7 @@ class OcrFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        textToSpeech?.stop()
         DialogUtils.dismissDialog()
     }
 }

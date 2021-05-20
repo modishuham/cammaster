@@ -124,8 +124,10 @@ class SearchFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         searchResultHandler.removeCallbacksAndMessages(null)
+        requireActivity().findViewById<ProgressBar>(R.id.progressBar).visibility =
+            View.GONE
     }
 }
