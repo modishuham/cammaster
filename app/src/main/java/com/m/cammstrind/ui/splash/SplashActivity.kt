@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_splash.*
 class SplashActivity : BaseActivity() {
 
     private val requestPermissionCode = 999
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +42,7 @@ class SplashActivity : BaseActivity() {
         iv_splash_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.animation_scale_in))
 
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler.postDelayed({
             checkPermission()
         }, 2000)
     }
@@ -91,12 +92,14 @@ class SplashActivity : BaseActivity() {
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (shouldShowRequestPermissionRationale(CAMERA)) {
-                            showMessageOKCancel("Both permissions are required to access this application. Please allow both permissions."
+                            showMessageOKCancel(
+                                "Both permissions are required to access this application. Please allow both permissions."
                             ) { _, _ ->
                                 checkPermission()
                             }
                         } else {
-                            showMessageOKCancel("Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission"
+                            showMessageOKCancel(
+                                "Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission"
                             ) { _, _ ->
                                 finish()
                             }
@@ -116,5 +119,10 @@ class SplashActivity : BaseActivity() {
             .setPositiveButton("OK", okListener)
             .create()
             .show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
     }
 }

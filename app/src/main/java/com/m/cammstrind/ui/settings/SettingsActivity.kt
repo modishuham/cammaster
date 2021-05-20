@@ -47,6 +47,7 @@ class SettingsActivity : BaseActivity() {
         }
 
         handleAppLock()
+        handleCameraSound()
     }
 
     private fun handleAppLock() {
@@ -68,6 +69,22 @@ class SettingsActivity : BaseActivity() {
             } else {
                 Log.e("CamMaster", "AppLock $isOn")
                 AppPref.putBoolean(SharedPreferenceConstants.APP_LOCK_ENABLED, false)
+                AppAnalytics.trackAppLock(false)
+            }
+        }
+    }
+
+    private fun handleCameraSound() {
+        switch_camera_sound.isChecked =
+            AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
+        switch_camera_sound.setOnCheckedChangeListener { _, isOn ->
+            if (isOn) {
+                Log.e("CamMaster", "Camera Sound $isOn")
+                AppPref.putBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED, true)
+                AppAnalytics.trackAppLock(true)
+            } else {
+                Log.e("CamMaster", "Camera Sound $isOn")
+                AppPref.putBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED, false)
                 AppAnalytics.trackAppLock(false)
             }
         }

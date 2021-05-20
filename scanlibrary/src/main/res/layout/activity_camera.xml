@@ -17,6 +17,17 @@
         app:layout_constraintTop_toTopOf="@id/gl_top" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_camera_effect"
+        android:layout_width="0dp"
+        android:alpha="0"
+        android:layout_height="0dp"
+        android:background="@drawable/shape_camera_effect"
+        app:layout_constraintBottom_toBottomOf="@id/gl_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gl_top" />
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_flash_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

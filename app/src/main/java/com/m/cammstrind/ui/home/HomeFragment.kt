@@ -26,6 +26,8 @@ import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
 import com.m.cammstrind.analytics.AppAnalytics
+import com.m.cammstrind.storage.AppPref
+import com.m.cammstrind.storage.SharedPreferenceConstants
 import com.m.cammstrind.ui.settings.SettingsActivity
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
@@ -139,6 +141,10 @@ class HomeFragment : Fragment() {
         val preference = ScanConstants.OPEN_CAMERA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+        intent.putExtra(
+            ScanConstants.CAMERA_CLICK_SOUND,
+            AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
+        )
         startActivityForResult(intent, requestCode)
 
     }
@@ -148,6 +154,10 @@ class HomeFragment : Fragment() {
         val preference = ScanConstants.OPEN_MEDIA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+        intent.putExtra(
+            ScanConstants.CAMERA_CLICK_SOUND,
+            AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
+        )
         startActivityForResult(intent, requestCode)
     }
 

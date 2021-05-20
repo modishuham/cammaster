@@ -12,7 +12,8 @@
     <string name="delete">Delete</string>
     <string name="scanned_images">Scanned Images</string>
     <string name="scanned_pdf">Scanned PDF</string>
-    <string name="text_recognition">Text Recognition</string>
+    <string name="text_recognition">Image To Text</string>
+    <string name="text_recognition_sub">Extract text from image</string>
     <string name="rate_us">Rate Us</string>
     <string name="share_cam_master">Share CamMaster</string>
     <string name="please_press_and_hold_the_text_for_copy">Please press and hold the text for copy and share.</string>
@@ -30,4 +31,5 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="search_doc">Search doc</string>
+    <string name="camera_click_sound">Camera Click Sound</string>
 </resources>

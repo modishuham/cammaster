@@ -12,19 +12,39 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
+            app:destination="@id/aboutFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/slide_right"
+            app:popEnterAnim="@anim/slide_left"
+            app:popExitAnim="@anim/slide_right" />
         <action
             android:id="@+id/action_homeFragment_to_ocrFragment"
-            app:destination="@id/ocrFragment" />
+            app:destination="@id/ocrFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/slide_right"
+            app:popEnterAnim="@anim/slide_left"
+            app:popExitAnim="@anim/slide_right" />
         <action
             android:id="@+id/action_homeFragment_to_docListFragment"
-            app:destination="@id/docListFragment" />
+            app:destination="@id/docListFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/slide_right"
+            app:popEnterAnim="@anim/slide_left"
+            app:popExitAnim="@anim/slide_right" />
         <action
             android:id="@+id/action_homeFragment_to_pdfListFragment"
-            app:destination="@id/pdfListFragment" />
+            app:destination="@id/pdfListFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/slide_right"
+            app:popEnterAnim="@anim/slide_left"
+            app:popExitAnim="@anim/slide_right" />
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/slide_right"
+            app:popEnterAnim="@anim/slide_left"
+            app:popExitAnim="@anim/slide_right" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -77,7 +97,11 @@
         tools:layout="@layout/fragment_doc_list">
         <action
             android:id="@+id/action_docListFragment_to_docDetailFragment"
-            app:destination="@id/docDetailFragment" />
+            app:destination="@id/docDetailFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/pdfListFragment"
@@ -86,7 +110,11 @@
         tools:layout="@layout/fragment_pdf_list">
         <action
             android:id="@+id/action_pdfListFragment_to_pdfDetailFragment"
-            app:destination="@id/pdfDetailFragment" />
+            app:destination="@id/pdfDetailFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
@@ -112,12 +140,20 @@
         android:id="@+id/searchFragment"
         android:name="com.m.cammstrind.ui.search.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_pdfDetailFragment"
-            app:destination="@id/pdfDetailFragment" />
+            app:destination="@id/pdfDetailFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_searchFragment_to_docDetailFragment"
-            app:destination="@id/docDetailFragment" />
+            app:destination="@id/docDetailFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 </navigation>

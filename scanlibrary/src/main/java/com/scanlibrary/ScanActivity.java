@@ -27,15 +27,16 @@ public class ScanActivity extends FragmentActivity implements IScanner, Componen
 
     private void handleIntentPreference() {
         int preference = getIntent().getIntExtra(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+        boolean cameraSound = getIntent().getBooleanExtra(ScanConstants.CAMERA_CLICK_SOUND, false);
         if (preference == ScanConstants.OPEN_CAMERA) {
-            openCameraX();
+            openCameraX(cameraSound);
         } else if (preference == ScanConstants.OPEN_MEDIA) {
             openMediaContent();
         }
     }
 
-    private void openCameraX() {
-        startActivityForResult(new Intent(this, CameraActivity.class),
+    private void openCameraX(boolean cameraSound) {
+        startActivityForResult(new Intent(this, CameraActivity.class).putExtra(ScanConstants.CAMERA_CLICK_SOUND, cameraSound),
                 ScanConstants.START_CAMERA_REQUEST_CODE);
     }
 

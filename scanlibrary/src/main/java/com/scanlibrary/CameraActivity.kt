@@ -3,6 +3,7 @@ package com.scanlibrary
 import android.app.Activity
 import android.content.Intent
 import android.graphics.*
+import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -22,6 +23,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+
 typealias LumaListener = (luma: Double) -> Unit
 
 class CameraActivity : AppCompatActivity() {
@@ -31,6 +33,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private var currentCamLens = CAMERA_BACK
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
+    private var cameraClickSound: Boolean = false
 
     companion object {
         private const val TAG = "CameraX"
@@ -43,6 +46,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+        cameraClickSound = intent.getBooleanExtra(ScanConstants.CAMERA_CLICK_SOUND, false)
         startCamera()
         findViewById<ImageView>(R.id.btn_capture).setOnClickListener { takePhoto() }
         findViewById<ImageView>(R.id.btn_flash_mode).setOnClickListener { enableFlash() }
@@ -70,6 +74,17 @@ class CameraActivity : AppCompatActivity() {
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
+        if (cameraClickSound) {
+            try {
+                val sound = MediaActionSound()
+                sound.play(MediaActionSound.SHUTTER_CLICK)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+
+        findViewById<ImageView>(R.id.iv_camera_effect).animate().alpha(0.3F).duration = 500
+
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
@@ -95,7 +110,7 @@ class CameraActivity : AppCompatActivity() {
                         postImagePick(bitmap)
                     }, 0)
                     val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                 }
             })

@@ -12,4 +12,5 @@ public class ScanConstants {
     public final static String SELECTED_CAMERA_BITMAP = "selectedCameraBitmap";
     public final static String SELECTED_BITMAP_TYPE = "selectedBitmapType";
     public final static String SELECTED_BITMAP_NAME = "selectedBitmapName";
+    public final static String CAMERA_CLICK_SOUND = "camera_click_sound";
 }
