@@ -20,6 +20,8 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.m.cammstrind.R
 import com.m.cammstrind.analytics.AppAnalytics
+import com.m.cammstrind.storage.AppPref
+import com.m.cammstrind.storage.SharedPreferenceConstants
 import com.m.cammstrind.utils.DialogUtils
 import com.scanlibrary.BitmapUtils.getBitmap
 import com.scanlibrary.CameraActivity
@@ -112,7 +114,13 @@ class OcrFragment : Fragment() {
 
     private fun openCameraX() {
         startActivityForResult(
-            Intent(requireContext(), CameraActivity::class.java),
+            Intent(
+                requireContext(),
+                CameraActivity::class.java
+            ).putExtra(
+                ScanConstants.CAMERA_CLICK_SOUND,
+                AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
+            ),
             ScanConstants.START_CAMERA_REQUEST_CODE
         )
     }
