@@ -81,6 +81,12 @@ class HomeFragment : Fragment() {
         iv_search.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
+        btn_signature.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_signatureFragment)
+        }
+        btn_scan_qr.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_qrCodeMainFragment)
+        }
         tv_menu_rate_us.setOnClickListener {
             AppAnalytics.trackRateUsClick()
             try {

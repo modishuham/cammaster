@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_back_btn.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_pdf.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_qr_code.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_qr_code_scanner.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/ic_speak.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/shape_circle_background.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/shape_list_item_background.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/shape_rect.xml" value="0.1935" />
+        <entry key="app/src/main/res/drawable/shape_search_box.xml" value="0.1935" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/dialog_qr_code_result.xml" value="0.15128205128205127" />
+        <entry key="app/src/main/res/layout/fragment_doc_detail.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/fragment_doc_list.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/fragment_generate_qr_code.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_pdf_list.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/fragment_qr_code_list.xml" value="0.15128205128205127" />
+        <entry key="app/src/main/res/layout/fragment_qr_code_main.xml" value="0.15128205128205127" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.15213675213675212" />
+        <entry key="app/src/main/res/layout/fragment_signature.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/item_doc.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/item_qr_code.xml" value="0.5" />
+        <entry key="scanlibrary/src/main/res/drawable/shape_save_button.xml" value="0.1935" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="org.jetbrains.annotations.Nullable" />
     <option name="myDefaultNotNull" value="androidx.annotation.NonNull" />

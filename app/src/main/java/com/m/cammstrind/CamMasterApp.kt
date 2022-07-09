@@ -10,7 +10,7 @@ import com.m.cammstrind.storage.SharedPreferenceConstants
 
 class CamMasterApp : Application() {
 
-    private var isDarkModeEnabled: Boolean = false
+    private var isLightModeEnabled: Boolean = false
 
     init {
         instance = this
@@ -33,19 +33,19 @@ class CamMasterApp : Application() {
     }
 
     private fun checkDarkMode() {
-        isDarkModeEnabled = AppPref.getBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED)
-        Log.e("CamMaster", "Dark Mode $isDarkModeEnabled")
-        if (isDarkModeEnabled) {
+        isLightModeEnabled = AppPref.getBoolean(SharedPreferenceConstants.LIGHT_MODE_ENABLED)
+        Log.e("CamMaster", "Dark Mode $isLightModeEnabled")
+        if (isLightModeEnabled) {
             AppCompatDelegate
                 .setDefaultNightMode(
                     AppCompatDelegate
-                        .MODE_NIGHT_YES
+                        .MODE_NIGHT_NO
                 )
         } else {
             AppCompatDelegate
                 .setDefaultNightMode(
                     AppCompatDelegate
-                        .MODE_NIGHT_NO
+                        .MODE_NIGHT_YES
                 )
         }
     }

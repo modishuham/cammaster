@@ -88,6 +88,7 @@ class PdfListFragment : Fragment() {
                 }
                 withContext(Dispatchers.Main) {
                     adapter.setDocsList(pdfList)
+                    rv_pdf_list.scheduleLayoutAnimation()
                     if (pdfList.isEmpty()) {
                         requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
                             View.VISIBLE

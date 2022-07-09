@@ -62,13 +62,25 @@ class DocDetailFragment : Fragment() {
             convertToPdf()
         }
 
-        val mediaStorageDir: String =
-            "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
-        val mFolder = File(mediaStorageDir, docName)
-        if (mFolder.exists()) {
-            mBitmap = BitmapFactory.decodeFile(mFolder.absolutePath)
-            mBitmap?.let {
-                iv_doc_detail.setImageBitmap(it)
+        if (docName.startsWith("QR_CODE_")) {
+            val mediaStorageDir: String =
+                "" + requireContext().getExternalFilesDir(null) + "/QRCodes"
+            val mFolder = File(mediaStorageDir, docName)
+            if (mFolder.exists()) {
+                mBitmap = BitmapFactory.decodeFile(mFolder.absolutePath)
+                mBitmap?.let {
+                    iv_doc_detail.setImageBitmap(it)
+                }
+            }
+        } else {
+            val mediaStorageDir: String =
+                "" + requireContext().getExternalFilesDir(null) + "/CamMaster"
+            val mFolder = File(mediaStorageDir, docName)
+            if (mFolder.exists()) {
+                mBitmap = BitmapFactory.decodeFile(mFolder.absolutePath)
+                mBitmap?.let {
+                    iv_doc_detail.setImageBitmap(it)
+                }
             }
         }
     }

@@ -102,6 +102,7 @@ class DocListFragment : Fragment() {
                     }
                     withContext(Dispatchers.Main) {
                         adapter.setDocsList(docList)
+                        rv_doc_list.scheduleLayoutAnimation()
                         if (docList.isEmpty()) {
                             requireActivity().findViewById<ConstraintLayout>(R.id.cl_no_data).visibility =
                                 View.VISIBLE

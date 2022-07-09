@@ -27,10 +27,23 @@
     <string name="settings">Settings</string>
     <string name="off">OFF</string>
     <string name="on">ON</string>
-    <string name="dark_theme">Dark Theme</string>
+    <string name="light_theme">Light Theme</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="enable_app_lock">Enable App Lock</string>
     <string name="search_doc">Search doc</string>
     <string name="camera_click_sound">Camera Click Sound</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Save</string>
+    <string name="save_qr_code">Save QR code</string>
+    <string name="enter_text_here">Enter text here</string>
+    <string name="generate">Generate</string>
+    <string name="my_qr_codes">My QR Codes</string>
+    <string name="scan_qr_or_bar_code">Scan QR\nor bar code</string>
+    <string name="generate_qr_code">Generate QR code</string>
+    <string name="clear">Clear</string>
+    <string name="blue">Blue</string>
+    <string name="black">Black</string>
+    <string name="transparent_background">Transparent Background</string>
 </resources>

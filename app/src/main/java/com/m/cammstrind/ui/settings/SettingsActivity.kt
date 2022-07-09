@@ -21,27 +21,27 @@ class SettingsActivity : BaseActivity() {
         setContentView(R.layout.activity_settings)
         AppAnalytics.trackScreenLaunch("Settings")
 
-        isDarkModeEnabled = AppPref.getBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED)
-        switch_dark_mode.isChecked = isDarkModeEnabled
+        isDarkModeEnabled = AppPref.getBoolean(SharedPreferenceConstants.LIGHT_MODE_ENABLED)
+        switch_ligth_mode.isChecked = isDarkModeEnabled
 
-        switch_dark_mode.setOnCheckedChangeListener { _, isOn ->
+        switch_ligth_mode.setOnCheckedChangeListener { _, isOn ->
             if (isOn) {
-                Log.e("CamMaster", "" + isOn)
-                AppCompatDelegate
-                    .setDefaultNightMode(
-                        AppCompatDelegate
-                            .MODE_NIGHT_YES
-                    )
-                AppPref.putBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED, true)
-                AppAnalytics.trackToggleNightMode(true)
-            } else {
                 Log.e("CamMaster", "" + isOn)
                 AppCompatDelegate
                     .setDefaultNightMode(
                         AppCompatDelegate
                             .MODE_NIGHT_NO
                     )
-                AppPref.putBoolean(SharedPreferenceConstants.DARK_MODE_ENABLED, false)
+                AppPref.putBoolean(SharedPreferenceConstants.LIGHT_MODE_ENABLED, true)
+                AppAnalytics.trackToggleNightMode(true)
+            } else {
+                Log.e("CamMaster", "" + isOn)
+                AppCompatDelegate
+                    .setDefaultNightMode(
+                        AppCompatDelegate
+                            .MODE_NIGHT_YES
+                    )
+                AppPref.putBoolean(SharedPreferenceConstants.LIGHT_MODE_ENABLED, false)
                 AppAnalytics.trackToggleNightMode(false)
             }
         }

@@ -23,169 +23,189 @@
         app:layout_constraintStart_toEndOf="@+id/iv_logo"
         app:layout_constraintTop_toTopOf="@+id/iv_logo" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_browse_images"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/shape_rect"
-        android:elevation="5dp"
-        app:layout_constraintEnd_toStartOf="@id/btn_browse_pdf"
-        app:layout_constraintStart_toStartOf="@+id/gl_start"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/iv_browse_images"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="false"
-            app:lottie_rawRes="@raw/folder" />
-
-        <TextView
-            android:id="@+id/tv_browse_images"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="14dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/ubuntu_medium"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/scanned_images"
-            android:textColor="@color/colorText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/iv_browse_images"
-            app:layout_constraintStart_toStartOf="@+id/iv_browse_images"
-            app:layout_constraintTop_toBottomOf="@+id/iv_browse_images" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_browse_pdf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/shape_rect"
-        android:elevation="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_browse_images"
-        app:layout_constraintEnd_toStartOf="@+id/gl_end"
-        app:layout_constraintStart_toEndOf="@+id/btn_browse_images"
-        app:layout_constraintTop_toTopOf="@+id/btn_browse_images">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/iv_browse_pdf"
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="false"
-            app:lottie_rawRes="@raw/folder" />
-
-        <TextView
-            android:id="@+id/tv_browse_pdf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="14dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/ubuntu_medium"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/scanned_pdf"
-            android:textColor="@color/colorText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/iv_browse_pdf"
-            app:layout_constraintStart_toStartOf="@+id/iv_browse_pdf"
-            app:layout_constraintTop_toBottomOf="@+id/iv_browse_pdf" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_ocr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/shape_rect"
-        android:elevation="10dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/gl_end"
-        app:layout_constraintStart_toStartOf="@+id/gl_start"
-        app:layout_constraintTop_toBottomOf="@+id/btn_browse_images">
+        app:layout_constraintStart_toStartOf="@id/gl_start"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_ocr"
-            android:layout_width="100dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_ocr"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_ocr"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/ubuntu_medium"
-            android:text="@string/text_recognition"
-            android:textColor="@color/colorText"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_ocr_sub"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/iv_ocr"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_browse_images"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/shape_rect"
+                android:elevation="5dp"
+                app:layout_constraintEnd_toStartOf="@id/btn_browse_pdf"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_ocr_sub"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="10dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/ubuntu_light"
-            android:text="@string/text_recognition_sub"
-            android:textColor="@color/colorText"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/iv_ocr"
-            app:layout_constraintTop_toBottomOf="@+id/tv_ocr" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/iv_browse_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="false"
+                    app:lottie_rawRes="@raw/folder" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_browse_images"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="14dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/ubuntu_medium"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/scanned_images"
+                    android:textColor="@color/colorText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_browse_images"
+                    app:layout_constraintStart_toStartOf="@+id/iv_browse_images"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_browse_images" />
 
-    <RelativeLayout
-        android:id="@+id/rl_add_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_ocr">
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/addView_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:adSize="LARGE_BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
-    </RelativeLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_browse_pdf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rect"
+                android:elevation="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_browse_images"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_browse_images"
+                app:layout_constraintTop_toTopOf="@+id/btn_browse_images">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/iv_browse_pdf"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="false"
+                    app:lottie_rawRes="@raw/folder" />
+
+                <TextView
+                    android:id="@+id/tv_browse_pdf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="14dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/ubuntu_medium"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/scanned_pdf"
+                    android:textColor="@color/colorText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_browse_pdf"
+                    app:layout_constraintStart_toStartOf="@+id/iv_browse_pdf"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_browse_pdf" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_ocr"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:cardBackgroundColor="@color/colorTransparent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_browse_images">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/background_ocr" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_signature"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:cardBackgroundColor="@color/colorTransparent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_ocr">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/background_digital_signature" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_scan_qr"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:cardBackgroundColor="@color/colorTransparent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_signature">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/background_scan_qr" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <RelativeLayout
+                android:id="@+id/rl_add_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_scan_qr">
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/addView_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    app:adSize="LARGE_BANNER"
+                    app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+            </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnCamera"

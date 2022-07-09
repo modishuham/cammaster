@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         ndk
@@ -53,5 +53,7 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
 }

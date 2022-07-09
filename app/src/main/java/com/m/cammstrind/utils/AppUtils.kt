@@ -28,6 +28,15 @@ object AppUtils {
         }
     }
 
+    fun deleteQrCode(context: Context, qrName: String) {
+        val mediaStorageDir: String =
+            "" + context.getExternalFilesDir(null) + "/QRCodes"
+        val mFolder = File(mediaStorageDir, qrName)
+        if (mFolder.exists()) {
+            mFolder.delete()
+        }
+    }
+
     fun removeFileExtension(fileName: String): String {
         return if (fileName.indexOf(".") > 0)
             fileName.substring(0, fileName.lastIndexOf("."))
