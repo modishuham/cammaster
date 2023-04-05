@@ -2,6 +2,7 @@ package com.m.cammstrind.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.CamMasterApp
 
 object AppAnalytics {
@@ -10,6 +11,8 @@ object AppAnalytics {
         FirebaseAnalytics.getInstance(CamMasterApp.applicationContext())
 
     fun trackScreenLaunch(screenName: String) {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("screen_name", screenName)
@@ -20,6 +23,8 @@ object AppAnalytics {
     }
 
     fun trackToggleNightMode(isOn: Boolean) {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("value", "" + isOn)
@@ -30,6 +35,8 @@ object AppAnalytics {
     }
 
     fun trackAppLock(isOn: Boolean) {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("value", "" + isOn)
@@ -40,6 +47,8 @@ object AppAnalytics {
     }
 
     fun trackDocOpen(docName: String) {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("doc_name", docName)
@@ -50,6 +59,8 @@ object AppAnalytics {
     }
 
     fun trackPDFOpen(pdfName: String) {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("pdf_name", pdfName)
@@ -60,6 +71,8 @@ object AppAnalytics {
     }
 
     fun trackCameraOpen() {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("camera_open", "true")
@@ -70,6 +83,8 @@ object AppAnalytics {
     }
 
     fun trackFilesOpen() {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("files_open", "true")
@@ -80,6 +95,8 @@ object AppAnalytics {
     }
 
     fun trackRateUsClick() {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("rate_us", "true")
@@ -90,6 +107,8 @@ object AppAnalytics {
     }
 
     fun trackShareClick() {
+        if (BuildConfig.DEBUG)
+            return
         try {
             val bundle = Bundle()
             bundle.putString("rate_us", "true")

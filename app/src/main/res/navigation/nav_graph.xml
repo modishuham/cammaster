@@ -59,6 +59,9 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_imageCropFragment"
+            app:destination="@id/imageCropFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -212,5 +215,27 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_scanner"
+        android:id="@+id/scannerFragment"
+        android:name="com.m.cammstrind.ui.scanner.ScannerFragment"
+        android:label="ScannerFragment" >
+        <argument
+            android:name="image"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageCropFragment"
+        android:name="com.m.cammstrind.ui.imageCrop.ImageCropFragment"
+        android:label="ImageCropFragment" >
+        <argument
+            android:name="image"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_imageCropFragment_to_scannerFragment"
+            app:destination="@id/scannerFragment" />
     </fragment>
 </navigation>

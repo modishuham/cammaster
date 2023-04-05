@@ -30,6 +30,7 @@ class CamMasterApp : Application() {
             this
         ) { Log.e("CamMaster", "ADD Initialized") }
         checkDarkMode()
+        System.loadLibrary("opencv_java4")
     }
 
     private fun checkDarkMode() {

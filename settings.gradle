@@ -1,3 +1,4 @@
 include ':scanlibrary'
 include ':app'
 rootProject.name = "Cam Master"
+include ':openCV_4.6.0'

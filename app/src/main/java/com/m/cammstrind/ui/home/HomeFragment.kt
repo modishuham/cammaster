@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -26,11 +27,9 @@ import com.itextpdf.text.pdf.PdfWriter
 import com.m.cammstrind.BuildConfig
 import com.m.cammstrind.R
 import com.m.cammstrind.analytics.AppAnalytics
-import com.m.cammstrind.storage.AppPref
-import com.m.cammstrind.storage.SharedPreferenceConstants
+import com.m.cammstrind.ui.camera.CameraXActivity
 import com.m.cammstrind.ui.settings.SettingsActivity
-import com.scanlibrary.ScanActivity
-import com.scanlibrary.ScanConstants
+import com.m.cammstrind.utils.BitmapUtils
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.io.*
 
@@ -144,27 +143,31 @@ class HomeFragment : Fragment() {
 
     private fun openCamera() {
         AppAnalytics.trackCameraOpen()
-        val preference = ScanConstants.OPEN_CAMERA
-        val intent = Intent(requireContext(), ScanActivity::class.java)
-        intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-        intent.putExtra(
-            ScanConstants.CAMERA_CLICK_SOUND,
-            AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
-        )
-        startActivityForResult(intent, requestCode)
-
+        //val preference = ScanConstants.OPEN_CAMERA
+        //val intent = Intent(requireContext(), ScanActivity::class.java)
+        //intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+        //intent.putExtra(
+        //    ScanConstants.CAMERA_CLICK_SOUND,
+        //    AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
+        //)
+        //startActivityForResult(intent, requestCode)
+        openCameraX(false)
     }
 
     private fun openFiles() {
         AppAnalytics.trackFilesOpen()
-        val preference = ScanConstants.OPEN_MEDIA
+        /*val preference = ScanConstants.OPEN_MEDIA
         val intent = Intent(requireContext(), ScanActivity::class.java)
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
         intent.putExtra(
             ScanConstants.CAMERA_CLICK_SOUND,
             AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)
         )
-        startActivityForResult(intent, requestCode)
+        startActivityForResult(intent, requestCode)*/
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "image/*"
+            startActivityForResult(intent, 9090)
     }
 
     private fun saveReceivedImage(
@@ -236,12 +239,61 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun openCameraX(cameraSound: Boolean) {
+        startActivityForResult(
+            Intent(requireContext(), CameraXActivity::class.java).putExtra(
+                "camera_click_sound",
+                cameraSound
+            ),
+            12345
+        )
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 12345) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null || data.extras == null) {
+                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                val uriString = data.extras!!.getString("selectedCameraBitmap")
+                Toast.makeText(requireContext(), ""+uriString, Toast.LENGTH_SHORT).show()
+                //val bundle = Bundle()
+                //bundle.putParcelable(ScanConstants.SELECTED_BITMAP, Uri.parse(uriString))
+
+                val bundle = bundleOf("image" to uriString)
+                findNavController().navigate(R.id.action_homeFragment_to_imageCropFragment, bundle)
+            }
+        }
+
+        if (requestCode == 9090) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    if (data == null || data.data == null) {
+                        Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
+                    }
+                    val bitmap = BitmapUtils.getBitmapFromURIWithRotation(
+                        requireActivity(),
+                        data!!.data!!
+                    )
+
+                    val uriString = BitmapUtils.getUri(requireContext(),bitmap!!)
+                    Toast.makeText(requireContext(), ""+uriString.toString(), Toast.LENGTH_SHORT).show()
+                    val bundle = bundleOf("image" to uriString.toString())
+                    findNavController().navigate(R.id.action_homeFragment_to_imageCropFragment, bundle)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+
         if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
-            val uri: Uri? = data?.extras!!.getParcelable(ScanConstants.SCANNED_RESULT)
-            val imageType: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_TYPE) as String
-            val imageName: String = data.extras!!.get(ScanConstants.SELECTED_BITMAP_NAME) as String
+            val uri: Uri? = data?.extras!!.getParcelable("scanned_result")
+            val imageType: String = data.extras!!.get("selected_bitmap_type") as String
+            val imageName: String = data.extras!!.get("selected_bitmap_type") as String
             val bitmap: Bitmap?
             try {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
