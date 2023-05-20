@@ -50,7 +50,7 @@ class ImageCropFragment : Fragment(), View.OnClickListener {
                 original?.let { bitmap ->
                     showImageWithCropPoints(bitmap)
                 }
-
+                requireContext().contentResolver.delete(uri!!, null, null)
             }
         }
     }

@@ -217,10 +217,10 @@
             app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_scanner"
         android:id="@+id/scannerFragment"
         android:name="com.m.cammstrind.ui.scanner.ScannerFragment"
-        android:label="ScannerFragment" >
+        android:label="ScannerFragment"
+        tools:layout="@layout/fragment_scanner">
         <argument
             android:name="image"
             android:defaultValue=""
@@ -229,13 +229,15 @@
     <fragment
         android:id="@+id/imageCropFragment"
         android:name="com.m.cammstrind.ui.imageCrop.ImageCropFragment"
-        android:label="ImageCropFragment" >
+        android:label="ImageCropFragment">
         <argument
             android:name="image"
             android:defaultValue=""
             app:argType="string" />
         <action
             android:id="@+id/action_imageCropFragment_to_scannerFragment"
-            app:destination="@id/scannerFragment" />
+            app:destination="@id/scannerFragment"
+            app:popUpTo="@id/imageCropFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

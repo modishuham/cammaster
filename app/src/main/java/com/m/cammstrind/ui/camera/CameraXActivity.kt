@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.m.cammstrind.storage.AppPref
+import com.m.cammstrind.storage.SharedPreferenceConstants
 import com.m.cammstrind.utils.BitmapUtils
 import kotlinx.android.synthetic.main.activity_camerax.*
 import java.io.File
@@ -30,7 +32,6 @@ class CameraXActivity:AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private var currentCamLens = CAMERA_BACK
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
-    private var cameraClickSound: Boolean = false
 
     companion object {
         private const val TAG = "CameraX"
@@ -42,7 +43,6 @@ class CameraXActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.m.cammstrind.R.layout.activity_camerax)
-        cameraClickSound = intent.getBooleanExtra("camera_click_sound", false)
         startCamera()
         findViewById<ImageView>(com.m.cammstrind.R.id.btn_capture).setOnClickListener { takePhoto() }
         findViewById<ImageView>(com.m.cammstrind.R.id.btn_flash_mode).setOnClickListener { enableFlash() }
@@ -70,7 +70,7 @@ class CameraXActivity:AppCompatActivity() {
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        if (cameraClickSound) {
+        if (AppPref.getBoolean(SharedPreferenceConstants.CAMERA_SOUND_ENABLED)) {
             try {
                 val sound = MediaActionSound()
                 sound.play(MediaActionSound.SHUTTER_CLICK)

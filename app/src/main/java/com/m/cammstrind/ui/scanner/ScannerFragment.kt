@@ -11,6 +11,11 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
@@ -32,6 +37,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
     private var originalBitmap: Bitmap? = null
     private var transformedBitmap: Bitmap? = null
     private var rotationValue: Float = 0.0F
+    private var mInterstitialAd: InterstitialAd? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +50,13 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        InterstitialAd.load(
+            requireContext(),
+            "ca-app-pub-3940256099942544/1033173712",
+            AdRequest.Builder().build(), interstitialAdLoadCallback
+        )
+
         getBitmap()
         originalBitmap?.let {
             mBinding.ivScannedImage.setImageBitmap(it)
@@ -68,9 +81,9 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(true)
             dialog.setContentView(R.layout.dialog_save)
-            val saveBtnImg: Button = dialog.findViewById<Button>(R.id.btn_save_img)
-            val saveBtnPdf: Button = dialog.findViewById<Button>(R.id.btn_save_pdf)
-            val docName: EditText = dialog.findViewById<EditText>(R.id.et_file_name)
+            val saveBtnImg: Button = dialog.findViewById(R.id.btn_save_img)
+            val saveBtnPdf: Button = dialog.findViewById(R.id.btn_save_pdf)
+            val docName: EditText = dialog.findViewById(R.id.et_file_name)
             saveBtnImg.setOnClickListener { v1: View? ->
                 if (docName.text.toString().trim { it <= ' ' }
                         .isEmpty()) {
@@ -99,6 +112,19 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
             }
             dialog.show()
 
+        }
+    }
+
+    private val interstitialAdLoadCallback = object : InterstitialAdLoadCallback() {
+        override fun onAdLoaded(add: InterstitialAd) {
+            super.onAdLoaded(add)
+            mInterstitialAd = add
+            mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    findNavController().popBackStack(R.id.homeFragment, false)
+                }
+            }
         }
     }
 
@@ -288,6 +314,11 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                 document.open()
                 document.add(image)
                 document.close()
+            }
+            if (mInterstitialAd != null) {
+                mInterstitialAd!!.show(requireActivity())
+            } else {
+                findNavController().popBackStack(R.id.homeFragment, false)
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()

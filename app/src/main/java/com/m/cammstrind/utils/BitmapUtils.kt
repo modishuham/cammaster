@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.media.ThumbnailUtils
 import android.net.Uri
@@ -16,10 +15,9 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
 
 object BitmapUtils {
-
-    var currentSelectedBitmap: Bitmap? = null
 
     fun getThumbnail(path: String): Bitmap? {
         return try {
@@ -50,28 +48,16 @@ object BitmapUtils {
 
     fun getBitmap(context: Context, uri: Uri?): Bitmap? {
         return try {
-            val bitmap: Bitmap
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                bitmap.height
-                bitmap
-            } else {
-                /*return ImageDecoder.decodeBitmap(
-                             ImageDecoder.createSource(
-                                     context.getContentResolver(),
-                                     uri
-                             )
-                     );*/
-                bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                bitmap.height
-                bitmap
-            }
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri!!)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+            bitmap
         } catch (ex: java.lang.Exception) {
-            currentSelectedBitmap
+            null
         }
     }
 
-    fun getUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+    private fun getUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val relativeLocation = Environment.DIRECTORY_PICTURES
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis().toString())
@@ -113,19 +99,9 @@ object BitmapUtils {
         var inSampleSize = 1
         val bitmap: Bitmap
         try {
-            bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(
-                    activity.contentResolver,
-                    selectedImg
-                )
-            } else {
-                ImageDecoder.decodeBitmap(
-                    ImageDecoder.createSource(
-                        activity.contentResolver,
-                        selectedImg
-                    )
-                )
-            }
+            val inputStream: InputStream? = activity.contentResolver.openInputStream(selectedImg)
+            bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
             if (bitmap.byteCount > 50000000) {
                 inSampleSize = 4
             } else if (bitmap.byteCount > 30000000) {
@@ -160,25 +136,21 @@ object BitmapUtils {
         original: Bitmap
     ): Bitmap? {
         return try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val ei = ExifInterface(
-                    fileDescriptor!!.fileDescriptor
-                )
-                val orientation = ei.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED
-                )
-                val rotatedBitmap: Bitmap = when (orientation) {
-                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
-                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
-                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
-                    ExifInterface.ORIENTATION_NORMAL -> original
-                    else -> original
-                }
-                rotatedBitmap
-            } else {
-                original
+            val ei = ExifInterface(
+                fileDescriptor!!.fileDescriptor
+            )
+            val orientation = ei.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
+            val rotatedBitmap: Bitmap = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(original, 90f)
+                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(original, 180f)
+                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(original, 270f)
+                ExifInterface.ORIENTATION_NORMAL -> original
+                else -> original
             }
+            rotatedBitmap
         } catch (e: Exception) {
             e.printStackTrace()
             original
