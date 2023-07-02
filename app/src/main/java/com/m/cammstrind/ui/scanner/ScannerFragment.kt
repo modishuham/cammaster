@@ -1,13 +1,11 @@
 package com.m.cammstrind.ui.scanner
 
-import android.app.Dialog
 import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +14,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.Rectangle
@@ -77,40 +76,42 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
         }
 
         mBinding.tvSave.setOnClickListener {
-            val dialog = Dialog(requireActivity())
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.dialog_save)
-            val saveBtnImg: Button = dialog.findViewById(R.id.btn_save_img)
-            val saveBtnPdf: Button = dialog.findViewById(R.id.btn_save_pdf)
-            val docName: EditText = dialog.findViewById(R.id.et_file_name)
-            saveBtnImg.setOnClickListener { v1: View? ->
-                if (docName.text.toString().trim { it <= ' ' }
+            val bottomSheetDialog =
+                BottomSheetDialog(requireContext(), R.style.TransparentBottomSheetDialogTheme)
+            bottomSheetDialog.setContentView(R.layout.dialog_save)
+            bottomSheetDialog.setCancelable(true)
+            val saveBtnImg: Button? = bottomSheetDialog.findViewById(R.id.btn_save_img)
+            val saveBtnPdf: Button? = bottomSheetDialog.findViewById(R.id.btn_save_pdf)
+            val docName: EditText? = bottomSheetDialog.findViewById(R.id.et_file_name)
+            val fileName = "scan_${System.currentTimeMillis()}"
+            docName?.setText(fileName)
+            saveBtnImg?.setOnClickListener { v1: View? ->
+                if (docName?.text.toString().trim { it <= ' ' }
                         .isEmpty()) {
-                    docName.error = "Can't Empty"
+                    docName?.error = "Can't Empty"
                 } else {
                     saveReceivedImage(
                         transformedBitmap,
-                        docName.text.toString(),
+                        docName?.text.toString(),
                         "IMG"
                     )
-                    dialog.dismiss()
+                    bottomSheetDialog.dismiss()
                 }
             }
-            saveBtnPdf.setOnClickListener { v12: View? ->
-                if (docName.text.toString().trim { it <= ' ' }
+            saveBtnPdf?.setOnClickListener { v12: View? ->
+                if (docName?.text.toString().trim { it <= ' ' }
                         .isEmpty()) {
-                    docName.error = "Can't Empty"
+                    docName?.error = "Can't Empty"
                 } else {
                     saveReceivedImage(
                         transformedBitmap,
-                        docName.text.toString(),
+                        docName?.text.toString(),
                         "PDF"
                     )
-                    dialog.dismiss()
+                    bottomSheetDialog.dismiss()
                 }
             }
-            dialog.show()
+            bottomSheetDialog.show()
 
         }
     }
@@ -145,6 +146,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                 transformedBitmap = originalBitmap
                 mBinding.ivScannedImage.setImageBitmap(transformedBitmap)
             }
+
             "Magic Color" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyMagicColor(originalBitmap!!)
@@ -153,6 +155,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "Magic Color 2" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyMagicColor2(originalBitmap!!)
@@ -161,6 +164,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "Perfect" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyPerfectEffect(originalBitmap!!)
@@ -169,6 +173,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "Perfect 2" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyPerfect2Effect(originalBitmap!!)
@@ -177,6 +182,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "Grey Scale" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyGreyEffect(originalBitmap!!)
@@ -185,6 +191,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "B&W" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyBWEffect(originalBitmap!!)
@@ -193,6 +200,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
                     }
                 }
             }
+
             "B&W2" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     transformedBitmap = EffectsUtils.applyBW2Effect(originalBitmap!!)
@@ -205,14 +213,14 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
     }
 
     private fun setUpFilters() {
-        val item1 = FilterItem("Original", originalBitmap!!)
-        val item2 = FilterItem("Magic Color", originalBitmap!!)
-        val item3 = FilterItem("Perfect", originalBitmap!!, true)
-        val item4 = FilterItem("Grey Scale", originalBitmap!!)
-        val item5 = FilterItem("B&W", originalBitmap!!)
-        val item6 = FilterItem("Magic Color 2", originalBitmap!!)
-        val item7 = FilterItem("Perfect 2", originalBitmap!!)
-        val item8 = FilterItem("B&W2", originalBitmap!!)
+        val item1 = FilterItem("Original", resizeImage(originalBitmap!!))
+        val item2 = FilterItem("Magic Color", resizeImage(originalBitmap!!))
+        val item3 = FilterItem("Perfect", resizeImage(originalBitmap!!), true)
+        val item4 = FilterItem("Grey Scale", resizeImage(originalBitmap!!))
+        val item5 = FilterItem("B&W", resizeImage(originalBitmap!!))
+        val item6 = FilterItem("Magic Color 2", resizeImage(originalBitmap!!))
+        val item7 = FilterItem("Perfect 2", resizeImage(originalBitmap!!))
+        val item8 = FilterItem("B&W2", resizeImage(originalBitmap!!))
 
         val filterList = ArrayList<FilterItem>()
         filterList.add(item1)
@@ -237,7 +245,7 @@ class ScannerFragment : BaseFragment(), FilterAdapter.FilterItemClickListener {
         }
     }
 
-    fun resizeImage(image: Bitmap): Bitmap {
+    private fun resizeImage(image: Bitmap): Bitmap {
 
         val width = image.width
         val height = image.height

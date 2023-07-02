@@ -5,7 +5,7 @@
 5    <uses-sdk
 6        android:minSdkVersion="21"
 6-->/home/shubham/CamMaster/openCV_4.6.0/java/AndroidManifest.xml
-7        android:targetSdkVersion="26" />
+7        android:targetSdkVersion="30" />
 7-->/home/shubham/CamMaster/openCV_4.6.0/java/AndroidManifest.xml
 8
 9</manifest>

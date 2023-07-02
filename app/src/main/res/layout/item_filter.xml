@@ -28,7 +28,7 @@
             android:id="@+id/iv_filter_selected"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#50A7BEFF"
+            android:background="#90A7BEFF"
             android:padding="20dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_select_color" />

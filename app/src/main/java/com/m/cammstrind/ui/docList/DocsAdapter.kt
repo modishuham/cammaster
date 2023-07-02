@@ -95,6 +95,12 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                     isMultiSelect = true
                     activity?.findViewById<ImageView>(R.id.iv_multi_share_doc)?.visibility =
                         View.VISIBLE
+                    docImage.setImageDrawable(
+                        activity?.resources?.getDrawable(
+                            R.drawable.ic_select,
+                            null
+                        )
+                    )
                     itemView.alpha = 0.3f
                     selectedFilesList.add(doc)
                     btnShareDoc.alpha = 0f
@@ -120,11 +126,18 @@ class DocsAdapter : RecyclerView.Adapter<DocsAdapter.DocsViewHolder>() {
                         .navigate(R.id.action_docListFragment_to_docDetailFragment, bundle)
                 } else {
                     if (!selectedFilesList.contains(doc)) {
+                        docImage.setImageDrawable(
+                            activity?.resources?.getDrawable(
+                                R.drawable.ic_select,
+                                null
+                            )
+                        )
                         itemView.alpha = 0.3f
                         btnShareDoc.alpha = 0f
                         btnDeleteDoc.alpha = 0f
                         selectedFilesList.add(doc)
                     } else {
+                        docImage.setImageBitmap(doc.docImage)
                         itemView.alpha = 1.0f
                         btnShareDoc.alpha = 1.0f
                         btnDeleteDoc.alpha = 1.0f

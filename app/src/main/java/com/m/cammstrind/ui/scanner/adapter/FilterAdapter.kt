@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.m.cammstrind.databinding.ItemFilterBinding
 import com.m.cammstrind.model.FilterItem
@@ -50,6 +49,9 @@ class FilterAdapter : RecyclerView.Adapter<FilterAdapter.FilterViewHolder>() {
             }
 
             itemView.setOnClickListener {
+
+                if(item.isSelected)
+                    return@setOnClickListener
 
                 item.isSelected = true
                 filterList[selectedFilterPosition].isSelected = false

@@ -71,6 +71,9 @@ class HomeFragment : Fragment() {
         btn_scan_qr.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_qrCodeMainFragment)
         }
+        btn_pdf_viewer.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_pdfViewerFragment)
+        }
         tv_menu_rate_us.setOnClickListener {
             AppAnalytics.trackRateUsClick()
             try {
@@ -174,8 +177,6 @@ class HomeFragment : Fragment() {
                         data!!.data!!
                     )
                     val uriString = BitmapUtils.getUri(requireContext(), bitmap!!)
-                    Toast.makeText(requireContext(), "" + uriString.toString(), Toast.LENGTH_SHORT)
-                        .show()
                     val bundle = bundleOf("image" to uriString.toString())
                     findNavController().navigate(
                         R.id.action_homeFragment_to_imageCropFragment,
