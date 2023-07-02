@@ -2,43 +2,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@color/colorAppBack"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/scanButton"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/bottom_background_color"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_circle_background"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:text="Crop"
-        android:visibility="visible" />
+        android:padding="@dimen/bottom_bar_padding"
+        android:text="@string/scan"
+        android:textColor="@color/colorWhite" />
 
     <FrameLayout
-        android:id="@+id/sourceFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/scanButton"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_margin="@dimen/scanPadding">
 
-        <ImageView
-            android:id="@+id/sourceImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <FrameLayout
+            android:id="@+id/sourceFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:adjustViewBounds="true" />
+            android:layout_margin="@dimen/scanPadding">
 
-        <com.m.cammstrind.openCv.PolygonView
+            <ImageView
+                android:id="@+id/sourceImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true" />
+        </FrameLayout>
+
+        <com.scanlibrary.PolygonView
             android:id="@+id/polygonView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="visible" />
-
+            android:visibility="gone" />
     </FrameLayout>
 
 
