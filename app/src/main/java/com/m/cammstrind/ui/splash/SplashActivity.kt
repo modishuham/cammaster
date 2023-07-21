@@ -27,7 +27,7 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppAnalytics.trackScreenLaunch("Splash")
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             //window.insetsController?.hide(WindowInsets.Type.statusBars())
@@ -48,25 +48,24 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val storagePermission = ContextCompat.checkSelfPermission(
-                this,
-                WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            val cameraPermission =
-                ContextCompat.checkSelfPermission(this, CAMERA) == PackageManager.PERMISSION_GRANTED
-            if (storagePermission && cameraPermission) {
-                openNextScreen()
-            } else {
-                requestPermissions(
-                    arrayOf(
-                        WRITE_EXTERNAL_STORAGE,
-                        CAMERA
-                    ), requestPermissionCode
-                )
-            }
-        } else {
+        val readImagePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            READ_MEDIA_IMAGES else WRITE_EXTERNAL_STORAGE
+
+        val storagePermission = ContextCompat.checkSelfPermission(
+            this,
+            readImagePermission
+        ) == PackageManager.PERMISSION_GRANTED
+        val cameraPermission =
+            ContextCompat.checkSelfPermission(this, CAMERA) == PackageManager.PERMISSION_GRANTED
+        if (storagePermission && cameraPermission) {
             openNextScreen()
+        } else {
+            requestPermissions(
+                arrayOf(
+                    readImagePermission,
+                    CAMERA
+                ), requestPermissionCode
+            )
         }
     }
 
@@ -90,19 +89,17 @@ class SplashActivity : BaseActivity() {
                 if (storageRequestAccepted && cameraRequestAccepted) {
                     openNextScreen()
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (shouldShowRequestPermissionRationale(CAMERA)) {
-                            showMessageOKCancel(
-                                "Both permissions are required to access this application. Please allow both permissions."
-                            ) { _, _ ->
-                                checkPermission()
-                            }
-                        } else {
-                            showMessageOKCancel(
-                                "Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission"
-                            ) { _, _ ->
-                                finish()
-                            }
+                    if (shouldShowRequestPermissionRationale(CAMERA)) {
+                        showMessageOKCancel(
+                            "Both permissions are required to access this application. Please allow both permissions."
+                        ) { _, _ ->
+                            checkPermission()
+                        }
+                    } else {
+                        showMessageOKCancel(
+                            "Without giving permissions you can not access this app. Please go to Settings > Apps > CamMaster > Permissions and allow both permission"
+                        ) { _, _ ->
+                            finish()
                         }
                     }
                 }
